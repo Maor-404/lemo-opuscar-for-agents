@@ -5,8 +5,8 @@ import { chromium } from 'playwright-core';
 import fs from 'fs'; import path from 'path'; import { fileURLToPath } from 'url';
 import { serve, pageURL } from './serve.mjs';
 import { createRequire } from 'module';
-import { EXE, ARGS, warnIfSoftwareGL, WATCH_GL_LOST, GL_LOST_HELP, glLost } from './browser.mjs';
-export { GL_LOST_HELP, glLost };
+import { EXE, WEBGPU_ENV, launchBrowser, warnIfSoftwareGL, warnIfNoWebGPU, WATCH_GL_LOST, WATCH_GPU_LOST, GL_LOST_HELP, GPU_LOST_HELP, glLost, gpuLost } from './browser.mjs';
+export { GL_LOST_HELP, GPU_LOST_HELP, glLost, gpuLost };
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 let srv = null;
 export async function server() { if (!srv) srv = await serve(ROOT); return srv; }
@@ -22,14 +22,20 @@ export function takeSize(args) {
   if (!m || [w, h].some(n => n < 16 || n > 8192 || n % 2)) { console.error(`bad --size "${v}": use WxH with even numbers from 16 to 8192, e.g. 1080x1920`); process.exit(2); }
   return { w, h };
 }
+// --webgpu: removes the flag from args and enables hardware WebGPU browser launch (or LEMO_WEBGPU=1).
+export function takeWebGPU(args) {
+  const i = args.indexOf('--webgpu');
+  if (i >= 0) { args.splice(i, 1); return true; }
+  return WEBGPU_ENV;
+}
 const warned = new Set();   // each optional file warns only once per process (video.mjs opens several pages)
 const FATAL = new Set(['script', 'document']);   // things the page must have; module imports also have type script
 // gl: check for a lost WebGL context before handing the page over (the tools that only read the page, readcheck and events, pass false)
-export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = false, gl = true } = {}) {
+export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = false, gl = true, webgpu = WEBGPU_ENV } = {}) {
   requireDemo(dir);
   const { port } = await server();
   let browser;
-  try { browser = await chromium.launch({ executablePath: EXE, args: ARGS }); }
+  try { browser = await launchBrowser(chromium, { webgpu }); }
   catch (e) {   // playwright's own advice (npx playwright install) fetches the browser of another playwright version
     if (!EXE && /Executable doesn't exist|playwright install/i.test(String(e.message))) {
       const v = createRequire(import.meta.url)('playwright-core/package.json').version;
@@ -42,6 +48,7 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
   }
   const page = await browser.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
   await page.addInitScript(WATCH_GL_LOST);
+  await page.addInitScript(WATCH_GPU_LOST);
   const log = [];   // recent errors, printed together if READY is slow to arrive
   const note = s => { log.push(s); if (log.length > 8) log.shift(); console.error(s); };
   page.on('console', m => {
@@ -87,7 +94,13 @@ export async function openDemo(dir, { w = 1920, h = 1080, q = '', warnings = fal
     console.error(`the WebGL context (${lost}) was lost before the first frame: ${GL_LOST_HELP}`);
     process.exit(1);
   }
-  await warnIfSoftwareGL(page);
+  const devLost = (gl || webgpu) && await gpuLost(page);
+  if (devLost) {
+    console.error(`the WebGPU device (${devLost}) was lost before the first frame: ${GPU_LOST_HELP}`);
+    process.exit(1);
+  }
+  if (webgpu) await warnIfNoWebGPU(page);
+  else if (gl) await warnIfSoftwareGL(page);
   return { browser, page };
 }
 export function closeServer() { if (srv) srv.server.close(); }

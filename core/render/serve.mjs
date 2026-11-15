@@ -5,7 +5,7 @@ const T = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charse
   '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.gif': 'image/gif', '.webp': 'image/webp', '.svg': 'image/svg+xml',
   '.hdr': 'application/octet-stream', '.bin': 'application/octet-stream', '.gltf': 'model/gltf+json', '.glb': 'model/gltf-binary', '.wasm': 'application/wasm',
   '.woff2': 'font/woff2', '.woff': 'font/woff', '.ttf': 'font/ttf', '.otf': 'font/otf',
-  '.wav': 'audio/wav', '.mp3': 'audio/mpeg', '.mp4': 'video/mp4', '.txt': 'text/plain; charset=utf-8', '.map': 'application/json' };
+  '.wav': 'audio/wav', '.mp3': 'audio/mpeg', '.mp4': 'video/mp4', '.txt': 'text/plain; charset=utf-8', '.wgsl': 'text/plain; charset=utf-8', '.map': 'application/json' };
 // film projects outside the repo (in skill mode, in the user's own folder) are mounted under /@film/; /core/…, /styles/…, /node_modules/… still come from the repo root
 const MOUNT = '/@film/'; let filmDir = null;
 export function pageURL(root, port, dir) {

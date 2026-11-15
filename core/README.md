@@ -39,7 +39,7 @@ The viewport is 1920×1080 at device scale 1, or `--size WxH`. `--q 'k=v&…'` r
 | `.venv/bin/python core/render/srt.py cues.json out.srt` | subtitles from `[{t0, t1, text}]` |
 | `sh core/render/mux.sh video.mp4 mix.wav out.mp4 [fps=24] [grain=2]` | mux and master (below) |
 
-All four page tools take `--size WxH` (default `1920x1080`, even numbers) and `--q 'k=v'`.
+All four page tools take `--size WxH` (default `1920x1080`, even numbers), `--q 'k=v'`, and `--webgpu` (launches full Chrome/Edge with hardware WebGPU + device-loss checking).
 
 **readcheck** asks the page for `window.TEXTS(t)` at every step. Each text must stay fully in frame, unchanged, for at least CJK characters ÷ 4.5 + other non-space characters ÷ 15 + 1.5 s, and never less than `--min`. A new `text` under the same `id` starts a new piece. Text marked `pass: true` (a shop sign in a fly-through, a label the camera sweeps past, fine-print licence credits on the end card) is listed as passing and not timed; never mark text the film needs read. Subtitles are checked by their `.srt`, not here.
 
@@ -62,6 +62,7 @@ All four page tools take `--size WxH` (default `1920x1080`, even numbers) and `-
 | `core/lib.js` | seeded random `mulberry`, `hash`, `vnoise`, `clamp(x,a,b)`, `lerp(a,b,t)`, `seg(t,a,b)` (0→1 between a and b), easing on 0–1 (`ss(t)`, `eio(t)`, `eo(t)`, `ei(t)`, `back(t,s)`, `spring(t,k,z)`), `monotone`/`track` interpolation, envelope `env` |
 | `core/three/post.js` | three.js post: physical depth of field, GTAO, bloom, colour grade, 2× supersampling |
 | `core/post/crt.js` | WebGL2 CRT / VHS pass over a 2D canvas |
+| `core/webgpu/index.mjs` | WebGPU + `.wgsl` render/compute helpers and `makeThreeRenderer` (`three/webgpu`) |
 | `core/fonts/` | Fredoka, Lilita One, IM Fell English, ZCOOL KuaiLe (OFL, [`fonts/OFL.md`](fonts/OFL.md)) as subsets; ZCOOL holds only ≈ 200 characters |
 | `core/assets/polyhaven/` | CC0 HDRIs and models (`SOURCES.md`) |
 
@@ -89,6 +90,8 @@ The styles marked ✦ in the style list (`"needs": ["image-generation"]` in thei
 | `LEMO_OPUSCAR_HOME` | where `setup.sh` keeps the library (default `~/lemo-opuscar`) |
 | `PLAYWRIGHT_CHROME` | a Chrome / headless-shell executable instead of Playwright's |
 | `LEMO_ANGLE` | WebGL backend (default `metal` on macOS; `default` passes none). A virtualised adapter (most cloud VMs and CI runners) creates the demo's context and then drops it, so WebGL styles draw nothing: `LEMO_ANGLE=swiftshader` asks for software rendering up front and renders them, slowly |
+| `LEMO_WEBGPU` | set to `1` to enable `--webgpu` mode by default across page tools |
+| `LEMO_BROWSER` | browser channel when launching (`auto`, `chrome`, `msedge`, or `chromium`); `--webgpu` defaults `auto` to Chrome → Edge → Chromium so native WebGPU works reliably |
 | `RENDER_SLOTS` | optional; limits concurrent full renders across processes |
 | `LEMO_FETCH=0` | `sampler.py` doesn't download missing sample libraries; it stops and names the `fetch.sh` commands |
 | `LEMO_COLOR=bt709` | `mux.sh` writes limited-range BT.709 instead of the default full-range output |

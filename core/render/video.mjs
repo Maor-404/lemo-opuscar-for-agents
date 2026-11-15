@@ -5,8 +5,8 @@
 // The same demo can render several versions in parallel, but each version needs its own --out: two renders writing the same --out fail with an error instead of silently overwriting each other.
 // <out>.lock holds the owner's pid; if the owner is gone, or the lock file hasn't been refreshed for over 12 hours (the pid was reused by another process), it counts as stale and a new render takes over.
 import fs from 'fs'; import path from 'path'; import { spawn, execFileSync } from 'child_process';
-import { openDemo, closeServer, requireDemo, takeSize, GL_LOST_HELP, glLost } from './page.mjs';
-const args = process.argv.slice(2), { w: W, h: H } = takeSize(args), opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
+import { openDemo, closeServer, requireDemo, takeSize, takeWebGPU, GL_LOST_HELP, GPU_LOST_HELP, glLost, gpuLost } from './page.mjs';
+const args = process.argv.slice(2), webgpu = takeWebGPU(args), { w: W, h: H } = takeSize(args), opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
 const dir = args[0]; requireDemo(dir);
 const FPS = +opt('--fps', 24), WK = +opt('--workers', 3), Q = opt('--q', '');
 if (!(FPS > 0) || !Number.isInteger(WK) || WK < 1) { console.error('bad --fps / --workers: fps must be > 0, workers an integer ≥ 1'); process.exit(2); }
@@ -47,14 +47,14 @@ const fail = msg => { console.error(msg); cleanup(); process.exit(1); };
 
 const release = process.env.RENDER_SLOTS ? await (await import('./slot.mjs')).acquire() : () => {};   // with RENDER_SLOT_HELD=1 (an outer process already holds a slot), pass straight through
 segDir = fs.mkdtempSync(path.join(outDir, `.${base}_segs-`)); fs.writeFileSync(path.join(segDir, 'pid'), String(process.pid));
-const probe = await openDemo(dir, { w: W, h: H, q: Q }); const DUR = await probe.page.evaluate(() => window.DUR); await probe.browser.close();
+const probe = await openDemo(dir, { w: W, h: H, q: Q, webgpu }); const DUR = await probe.page.evaluate(() => window.DUR); await probe.browser.close();
 if (!(DUR > 0)) fail(`window.DUR must be a positive number of seconds (got ${DUR})`);
 const TOTAL = Math.round(DUR * FPS), per = Math.ceil(TOTAL / WK), t0 = Date.now();
-let abort = null;   // a worker found the WebGL context lost: every worker stops feeding and lets its ffmpeg finish (on Windows a killed
+let abort = null;   // a worker found the WebGL context or WebGPU device lost: every worker stops feeding and lets its ffmpeg finish (on Windows a killed
                     // ffmpeg keeps its segment busy for a while), then the render fails with nothing left behind
 try { await Promise.all([...Array(WK)].map(async (_, w) => {
   const a = w * per, b = Math.min(TOTAL, a + per); if (a >= b) return;
-  const { browser, page } = await openDemo(dir, { w: W, h: H, q: Q });
+  const { browser, page } = await openDemo(dir, { w: W, h: H, q: Q, webgpu });
   // cwd set to the segment directory with relative filenames: that way ffmpeg won't read characters such as # ? in the path as protocol syntax
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
     '-c:v', 'libx264', '-preset', 'medium', '-crf', '14', '-pix_fmt', 'yuv420p', `seg_${w}.mp4`], { cwd: segDir, stdio: ['pipe', 'inherit', 'inherit'] });
@@ -69,8 +69,12 @@ try { await Promise.all([...Array(WK)].map(async (_, w) => {
     if (dead) break;
     if (!ff.stdin.write(buf)) await Promise.race([new Promise(r => ff.stdin.once('drain', r)), closed]);
     if ((f - a) % 60 === 0) console.log(`w${w} ${f - a}/${b - a}  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
-    if ((f - a) % 60 === 59 || f === b - 1) { const lost = await glLost(page);   // see WATCH_GL_LOST in browser.mjs
-      if (lost) { abort ??= `the WebGL context (${lost}) was lost during frames ${a}–${f} of worker ${w}: ${GL_LOST_HELP}`; break; } }
+    if ((f - a) % 60 === 59 || f === b - 1) {
+      const lost = await glLost(page);   // see WATCH_GL_LOST in browser.mjs
+      if (lost) { abort ??= `the WebGL context (${lost}) was lost during frames ${a}–${f} of worker ${w}: ${GL_LOST_HELP}`; break; }
+      const devLost = await gpuLost(page);   // see WATCH_GPU_LOST in browser.mjs
+      if (devLost) { abort ??= `the WebGPU device (${devLost}) was lost during frames ${a}–${f} of worker ${w}: ${GPU_LOST_HELP}`; break; }
+    }
   }
   ff.stdin.end(); const code = await closed; await browser.close();
   if (abort) return;

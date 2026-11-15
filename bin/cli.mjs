@@ -471,10 +471,47 @@ function cmdDoctor() {
   const ffmpeg = probeCommand('ffmpeg', ['-version']);
   console.log(`  ${ffmpeg ? '✓' : '✗'} ffmpeg: ${ffmpeg || 'not found (need >= 7)'}`);
 
+  const pwPkg = fs.existsSync(path.join(PKG_ROOT, 'node_modules', 'playwright-core', 'package.json'))
+    || fs.existsSync(path.join(process.cwd(), 'node_modules', 'playwright-core', 'package.json'));
+  console.log(`  ${pwPkg ? '✓' : '·'} playwright-core: ${pwPkg ? 'installed' : 'run deps setup below to install'}`);
+
+  const webgpuBrowser = findWebGPUBrowser();
+  console.log(`  ${webgpuBrowser ? '✓' : '·'} WebGPU browser (--webgpu): ${webgpuBrowser || 'no system Chrome/Edge detected (uses chromium fallback or set PLAYWRIGHT_CHROME)'}`);
+
   const setupCmd = process.platform === 'win32'
     ? 'python3 .agents/skills/lemo-opuscar/scripts/setup.py deps'
     : 'sh .agents/skills/lemo-opuscar/scripts/setup.sh deps';
   console.log(`\nRun inside your project or repo root to install Node + Python runtime deps:\n  ${setupCmd}`);
+}
+
+/** Detect an installed Chrome or Edge binary capable of hardware --webgpu rendering. */
+function findWebGPUBrowser() {
+  if (process.env.PLAYWRIGHT_CHROME && fs.existsSync(process.env.PLAYWRIGHT_CHROME)) {
+    return `PLAYWRIGHT_CHROME (${process.env.PLAYWRIGHT_CHROME})`;
+  }
+  const candidates = process.platform === 'win32'
+    ? [
+        ['Chrome', 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'],
+        ['Chrome', 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'],
+        ['Chrome', path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'Application', 'chrome.exe')],
+        ['Edge', 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'],
+        ['Edge', 'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe'],
+      ]
+    : process.platform === 'darwin'
+      ? [
+          ['Chrome', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'],
+          ['Edge', '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge'],
+        ]
+      : [
+          ['Chrome', '/usr/bin/google-chrome'],
+          ['Chrome', '/usr/bin/google-chrome-stable'],
+          ['Edge', '/usr/bin/microsoft-edge'],
+          ['Chromium', '/usr/bin/chromium'],
+        ];
+  for (const [label, binPath] of candidates) {
+    if (fs.existsSync(binPath)) return `${label} (${binPath})`;
+  }
+  return null;
 }
 
 /** Main entrypoint. */

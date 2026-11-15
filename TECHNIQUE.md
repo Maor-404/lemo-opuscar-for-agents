@@ -65,7 +65,7 @@ sh core/render/mux.sh "$HERE/out/video.mp4" "$HERE/out/mix.wav" "$HERE/<name>.mp
 Rules that keep it reliable:
 
 - **Deterministic.** No `Date.now()`, no `Math.random()` without a seed (`core/lib.js` has `mulberry` and `hash`), no state carried from the previous frame. Any frame can be rendered alone, in any order, by any worker.
-- **Canvas 2D** for most 2D styles; **three.js** for 3D (§9); **WebGL2** shaders for post passes (film damage, CRT, ink redraw).
+- **Canvas 2D** for most 2D styles; **three.js** for 3D (§9); **WebGL2** shaders for post passes (film damage, CRT, ink redraw); **WebGPU** (WGSL render/compute passes + `three/webgpu`) when launching render tools with `--webgpu` (or `LEMO_WEBGPU=1`) and importing `/core/webgpu/index.mjs`.
 - **Animate on twos where the style wants it** (12 fps stepping for stop-motion, pixel or cel looks), but keep the camera and light smooth every frame. A stepped camera reads as lag.
 - **One world → screen function.** Any effect that follows a subject (iris, zoom, spotlight) goes through it. Never hand-type screen coordinates.
 - **Draw for the frame you render.** The default is 1920×1080; for another size pass `--size WxH` (e.g. `1080x1920`) to every render tool and lay the page out from `innerWidth` × `innerHeight`.
@@ -133,6 +133,7 @@ Write an original score from the cue map, in the instruments of the style's soun
 ## 9. 3D notes
 
 - three.js r170 rendered headless through WebGL2 on the GPU; physical depth of field and GTAO from `core/three/post.js`, rendered at 2× and downsampled.
+- **WebGPU / TSL path**: `core/webgpu/index.mjs` provides `initWebGPU`, `loadWGSL`, `createFullscreenPass`, `createComputePass`, and `makeThreeRenderer` (`three/webgpu` `WebGPURenderer` with automatic `WebGL2` fallback). Pass `--webgpu` (or set `LEMO_WEBGPU=1`) to `still.mjs` / `video.mjs` so Chrome/Edge launches with native hardware WebGPU + `GPUDevice.lost` watchdogs.
 - Lighting: soft area lights plus a Poly Haven HDRI at low intensity reads more "real" than bright ambient light.
 - `core/three/post.js` is written for a perspective camera. For an orthographic camera swap `perspectiveDepthToViewZ` for `orthographicDepthToViewZ` in its depth pass, or the depth of field silently breaks.
 

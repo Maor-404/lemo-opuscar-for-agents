@@ -9,8 +9,10 @@
 //   Text the viewer isn't meant to read in full (a shop sign in a fly-through, a label the camera sweeps past, the fine-print licence credits
 //   on an end card) can carry pass: true: it is listed as passing and not timed. Anything the film needs the viewer to read must not be marked.
 // Exit code: 0 all pass; 1 some fail; 2 the check couldn't run (the page has no window.TEXTS, or the whole film never returned any text) — this does not count as a pass.
-import { openDemo, closeServer, requireDemo, takeSize } from './page.mjs';
-const args = process.argv.slice(2), { w: VW, h: VH } = takeSize(args), opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
+import { openDemo, closeServer, requireDemo, takeSize, takeWebGPU } from './page.mjs';
+const args = process.argv.slice(2);
+takeWebGPU(args);
+const { w: VW, h: VH } = takeSize(args), opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
 const dir = args[0]; requireDemo(dir);
 const Q = opt('--q', ''), STEP = +opt('--step', 0.04), LATIN = +opt('--latin-cps', 15), CJK = +opt('--cjk-cps', 4.5), PAD = +opt('--pad', 1.5), MIN = +opt('--min', 1.5);
 if (![STEP, LATIN, CJK, PAD, MIN].every(Number.isFinite) || STEP <= 0 || LATIN <= 0 || CJK <= 0) { console.error('bad option value (step and the cps values must be > 0)'); process.exit(2); }

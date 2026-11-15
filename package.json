@@ -1,6 +1,6 @@
 {
   "name": "lemo-opuscar-for-agents",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "type": "module",
   "description": "Lemo Opuscar for Agents: code-rendered film styles and shared Agent Skill for Antigravity, Gemini CLI, Codex CLI, OpenCode, GitHub Copilot, and Claude Code (fork of Lemo-Opuscar by Lemomo / LemoLab).",
   "bin": {
@@ -47,6 +47,7 @@
     "claude-code",
     "video",
     "animation",
+    "webgpu",
     "webgl",
     "canvas",
     "playwright",
