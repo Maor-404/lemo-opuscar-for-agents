@@ -1,25 +1,25 @@
 <div align="center">
 
-<a href="https://lemomo-ai.github.io/lemo-opuscar/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cover-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cover-en-light.webp"><img src="docs/cover.jpg" width="100%" alt="Lemo-Opuscar: the long workbench at night, OPUSCAR set in wood type"></picture></a>
+<a href="https://lemomo-ai.github.io/lemo-opuscar/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cover-en-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cover-en-light.webp"><img src="docs/cover.jpg" width="100%" alt="Lemo Opuscar for Agents: the long workbench at night, OPUSCAR set in wood type"></picture></a>
 
-# Lemo-Opuscar
+# Lemo Opuscar for Agents
 
 **<!--n-->99<!--/n--> film styles for your coding agent. Pick one, bring your story, and the agent makes the film, entirely in code.**
+
+<p><sub>Forked from <a href="https://github.com/lemomo-ai/lemo-opuscar">Lemo-Opuscar</a> by Lemomo (LemoLab) with first-class multi-agent compatibility (Antigravity, Gemini CLI, Codex CLI, OpenCode, Copilot, Claude Code) and the <code>lemo-opuscar-for-agents</code> npm CLI · <a href="https://github.com/Maor-404/lemo-opuscar-for-agents">github.com/Maor-404/lemo-opuscar-for-agents</a></sub></p>
 
 <p><!--n-->99<!--/n--> 种影片风格，每种都配一支完全用代码做出来的短片 · 🇨🇳 中文用户请看 <a href="README.zh-CN.md">简体中文说明</a></p>
 
 [**▶ Open the gallery**](https://lemomo-ai.github.io/lemo-opuscar/) · [中文画廊](https://lemomo-ai.github.io/lemo-opuscar/zh/)
 
-<a href="https://trendshift.io/repositories/262645?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-262645" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/262645/daily?language=JavaScript" alt="lemomo-ai%2Flemo-opuscar | Trendshift" width="250" height="55"/></a>
-
-<sub>Official repo: [github.com/lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) · by Lemomo ([@lemomo_ai](https://x.com/lemomo_ai))</sub>
+<sub>Fork repo: [github.com/Maor-404/lemo-opuscar-for-agents](https://github.com/Maor-404/lemo-opuscar-for-agents) · npm: `lemo-opuscar-for-agents` · Upstream: [github.com/lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) by Lemomo ([@lemomo_ai](https://x.com/lemomo_ai))</sub>
 
 </div>
 
 > [!IMPORTANT]
 > **This release was audited and improved with Claude Fable 5.2.**
 >
-> **Built for Claude.** Claude Fable, Opus and Sonnet all work; set effort to **high** (in Claude Code, type `/effort high`). Other models may not reproduce the styles well, so use them with care.
+> **Agent compatibility vs. model compatibility:** Lemo-Opuscar ships as an open [Agent Skill](https://agentskills.io) (`.agents/skills/lemo-opuscar/` + `AGENTS.md`) alongside the Claude Code plugin, and supports **Google Antigravity**, **Gemini CLI**, **OpenAI Codex CLI**, **OpenCode**, **GitHub Copilot**, and **Claude Code** (see [Supported AI Coding Agents](#supported-ai-coding-agents)). How closely the visuals follow each style still depends on the **model** running your agent: the 99 styles were tuned with Claude Opus 5.5 and work best with Claude Fable, Opus and Sonnet (set effort to **high** where supported, e.g. `/effort high` in Claude Code). Other models can execute the pipeline, though style fidelity and visual polish vary by model.
 
 ## 🆕 New
 
@@ -44,26 +44,42 @@ Name the style in English or Chinese, or by its folder; the [style index](styles
 
 ### Install
 
-**The skill (recommended).** In your terminal:
+**Quick install via npm / npx (any project or global agent skills):**
 
 ```sh
-claude plugin marketplace add lemomo-ai/lemo-opuscar
+npx lemo-opuscar-for-agents init
+# or install globally for all supported agents:
+npx lemo-opuscar-for-agents init --scope global --agent all
+# explore styles & check environment:
+npx lemo-opuscar-for-agents styles
+npx lemo-opuscar-for-agents doctor
+```
+
+**Or clone the repo (works across all agents that read `.agents/skills/`).** Films go into `films/<name>/` inside it:
+
+```sh
+git clone https://github.com/Maor-404/lemo-opuscar-for-agents.git
+cd lemo-opuscar-for-agents
+```
+
+Open that folder in Google Antigravity, Gemini CLI, OpenAI Codex CLI, OpenCode, or GitHub Copilot (VS Code / CLI) and ask for a film — the skill in [`.agents/skills/lemo-opuscar/`](.agents/skills/lemo-opuscar/) and instructions in [`AGENTS.md`](AGENTS.md) are discovered automatically. For Claude Code in a clone, run `claude --plugin-dir ./plugin`.
+
+**Or install the skill directly without cloning the full repo.** Each platform installs or copies the shared skill into its global skills directory; on first use it downloads the guides, tools and style prompts to `~/lemo-opuscar` (override with `LEMO_OPUSCAR_HOME`), while each film project goes into the folder you started from:
+
+- **Claude Code marketplace plugin:**
+
+```sh
+claude plugin marketplace add Maor-404/lemo-opuscar-for-agents
 claude plugin install lemo-opuscar@lemolab
 ```
 
-Then use it from any folder. On first use it downloads the guides, tools and style prompts to `~/lemo-opuscar`, shared by all your films; each film's project, from source to finished video, goes in the folder you started from. For other agents, copy [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) into their skills folder.
-
-**Or clone the repo.** Films go into `films/<name>/` inside it.
-
-```sh
-git clone https://github.com/lemomo-ai/lemo-opuscar.git
-cd lemo-opuscar
-claude
-```
+- **Other agents (Antigravity, Gemini CLI, Codex CLI, OpenCode, GitHub Copilot):** see [Supported AI Coding Agents](#supported-ai-coding-agents) below for per-agent global install commands, project paths, verification, and updates.
 
 ### Update or uninstall
 
-Update, then restart Claude Code (the library in `~/lemo-opuscar` updates itself on the next film):
+From a clone: `git pull`, then run `sh .agents/skills/lemo-opuscar/scripts/setup.sh deps` once (or `python3 .agents/skills/lemo-opuscar/scripts/setup.py deps` in Windows PowerShell/CMD when `sh` is not on PATH; it updates only the core packages that changed; if you installed the voice or music packages, run `… deps voice music` instead).
+
+For **Claude Code marketplace installs**, update and restart Claude Code (the library in `~/lemo-opuscar` updates itself on the next film):
 
 ```sh
 claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab
@@ -71,21 +87,19 @@ claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@le
 
 To have it update by itself: in Claude Code, type `/plugin`, open **Marketplaces**, pick **lemolab** and choose **Enable auto-update** (third-party marketplaces such as lemolab don't update automatically until you turn this on).
 
-From a clone: `git pull`, then run `sh plugin/skills/lemo-opuscar/scripts/setup.sh deps` once (it updates only the core packages that changed; if you installed the voice or music packages, run `… deps voice music` instead).
-
-After an update, ask for a film as usual; to make a style your own, see [below](#make-a-style-your-own).
-
-Uninstall, then delete `~/lemo-opuscar`:
+Uninstall the Claude Code plugin, then delete `~/lemo-opuscar`:
 
 ```sh
 claude plugin uninstall lemo-opuscar@lemolab
 ```
 
+For update steps on other supported agents, see [Supported AI Coding Agents](#supported-ai-coding-agents). After an update, ask for a film as usual; to make a style your own, see [below](#make-a-style-your-own).
+
 Your own styles in `~/lemo-my-styles/` stay through updates and uninstalls; delete that folder yourself if you don't want them. If a step stays stuck, [open an issue](https://github.com/lemomo-ai/lemo-opuscar/issues).
 
 ### What happens next
 
-Not sure yet? With the skill installed, type `/lemo-opuscar:lemo-opuscar` and nothing else. It asks which language to use, then what you'd like to do: a film in a library style, [make a style your own](#make-a-style-your-own), or a film in a style you've saved.
+Not sure yet? Trigger the skill without a prompt (for example `/lemo-opuscar:lemo-opuscar` in Claude Code, `$lemo-opuscar` in Codex CLI, or ask your agent to start Lemo-Opuscar). It asks which language to use, then what you'd like to do: a film in a library style, [make a style your own](#make-a-style-your-own), or a film in a style you've saved.
 
 It asks you once, up front: anything it can't decide about your topic; whether you have your own **voice, music or other material**; whether you want to see a **storyboard** first (say yes and it stops once to show you the key shots in the real style; otherwise it goes straight to the finished film).
 
@@ -102,9 +116,135 @@ Every film is directed, drawn, scored and mixed by the agent writing code: 🎨 
 ### Before you start
 
 - A film takes an agent about 30–60 minutes and a fair amount of tokens.
-- You need Node 20+, ffmpeg 7+ and Python 3.11+ (or [uv](https://docs.astral.sh/uv/)); the agent installs the rest. Ubuntu 24.04 ships ffmpeg 6.1, which is too old: use a [static build](https://johnvansickle.com/ffmpeg/).
-- Three styles draw their characters with an image generator you bring (Manga Panels, Text Flash Cuts, Comic History Cartoon; marked ✦ in [the style list](styles/README.md)): the [Codex CLI](https://github.com/openai/codex) signed in to an account that can generate images, or another image tool you have. Without one, those three can't start; every other style works without it.
+- You need Node 20+, ffmpeg 7+ and Python 3.11+ (or [uv](https://docs.astral.sh/uv/)); the agent installs the rest. Ubuntu 24.04 ships ffmpeg 6.1, which is too old: use a [static build](https://johnvansickle.com/ffmpeg/). On Windows, if `sh` is not on PATH in PowerShell or CMD, use `python3 .agents/skills/lemo-opuscar/scripts/setup.py` (it locates Git Bash, MSYS2, or WSL automatically).
+- Three styles draw their characters with an image generator you bring (Manga Panels, Text Flash Cuts, Comic History Cartoon; marked ✦ in [the style list](styles/README.md)): `core/image/gen_image.py` supports `--provider auto|codex|openai|gemini` (or `LEMO_IMAGE_PROVIDER`; `auto` checks a signed-in [Codex CLI](https://github.com/openai/codex) first, then `OPENAI_API_KEY`, then `GEMINI_API_KEY`/`GOOGLE_API_KEY`), or another image tool you have. Without one, those three can't start; every other style works without it.
 - Default output 1920×1080 at 24 fps (some styles set their own frame rate, such as 30 fps); other sizes on request.
+
+## Supported AI Coding Agents
+
+Lemo-Opuscar uses the open [Agent Skills](https://agentskills.io) standard at [`.agents/skills/lemo-opuscar/`](.agents/skills/lemo-opuscar/) as its shared distribution, deterministically mirrored to [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) for the Claude Code plugin and non-hidden CLI installers (`tools/sync_skills.py`).
+
+If you clone this repository and open it as your workspace, platforms that automatically scan `.agents/skills/` discover Lemo-Opuscar immediately with no extra setup. You do **not** need a Claude Code plugin to use another coding agent.
+
+| Platform | Recommended install (standalone / clone) | Project skill directory | Global skill directory | Verify discovery |
+|---|---|---|---|---|
+| **Google Antigravity** (IDE & CLI `agy`) | Open clone workspace, or copy to global skills / `gh skill install` | `.agents/skills/lemo-opuscar/` | `~/.gemini/config/skills/lemo-opuscar/` | Open in IDE or run `agy` in repo; ask for available skills |
+| **Gemini CLI** | Open trusted clone workspace, or `gemini skills install` | `.agents/skills/lemo-opuscar/` | `~/.agents/skills/lemo-opuscar/` or `~/.gemini/skills/lemo-opuscar/` | `gemini skills list` (or `/skills list` in session) |
+| **OpenAI Codex CLI** | Open clone workspace, or copy to global skills / `gh skill install` | `.agents/skills/lemo-opuscar/` | `~/.agents/skills/lemo-opuscar/` | `/skills` or `$lemo-opuscar` in session |
+| **OpenCode** | Open clone workspace, or copy to global skills / `gh skill install` | `.agents/skills/lemo-opuscar/` | `~/.config/opencode/skills/lemo-opuscar/` or `~/.agents/skills/lemo-opuscar/` | Start `opencode` and ask about `lemo-opuscar` |
+| **GitHub Copilot** (VS Code, CLI, Coding Agent) | Open clone workspace, or `gh skill install ... --agent github-copilot` | `.agents/skills/lemo-opuscar/` | `~/.copilot/skills/lemo-opuscar/` or `~/.agents/skills/lemo-opuscar/` | `/skills` (CLI), Chat diagnostics (VS Code), or `gh skill list` |
+| **Claude Code** | `claude plugin marketplace add` / `install`, or `claude --plugin-dir ./plugin` | `plugin/skills/lemo-opuscar/` (plugin) or `.claude/skills/lemo-opuscar/` | Marketplace plugin `lemo-opuscar@lemolab` or `~/.claude/skills/lemo-opuscar/` | `/skills`, `/lemo-opuscar:lemo-opuscar`, or `claude plugin validate ./plugin` |
+
+### Platform guides
+
+<details>
+<summary><b>Google Antigravity (IDE and CLI)</b></summary>
+
+- **Installation:**
+  - **From a clone (easiest):** `git clone https://github.com/Maor-404/lemo-opuscar-for-agents.git` and open the folder in Antigravity IDE or `agy`. Antigravity discovers `.agents/skills/lemo-opuscar/SKILL.md` and `AGENTS.md` automatically.
+  - **Global install (any folder):** run `npx lemo-opuscar-for-agents init --scope global --agent antigravity`, copy `.agents/skills/lemo-opuscar/` into `~/.gemini/config/skills/lemo-opuscar/`, or install via GitHub CLI:
+    ```sh
+    gh skill install Maor-404/lemo-opuscar-for-agents lemo-opuscar --agent antigravity --scope user
+    ```
+- **Project / global skill directories:** `.agents/skills/lemo-opuscar/` (project; legacy `.agent/skills/`) · `~/.gemini/config/skills/lemo-opuscar/` (global).
+- **Special setup:** Needs Node 20+, ffmpeg 7+, Python 3.11+ (or `uv`). On Windows PowerShell/CMD when `sh` is not on PATH, run `python3 .agents/skills/lemo-opuscar/scripts/setup.py` (locates Git Bash, MSYS2, or WSL).
+- **Verify discovery:** In Antigravity IDE or `agy`, start a conversation inside the folder and confirm `lemo-opuscar` appears among loaded skills (or ask *"Which film styles does Lemo-Opuscar have?"*).
+- **Update:** `git pull` + `sh .agents/skills/lemo-opuscar/scripts/setup.sh deps` in a clone, or `gh skill update lemo-opuscar` / re-copy `.agents/skills/lemo-opuscar/` for global installs.
+
+</details>
+
+<details>
+<summary><b>Gemini CLI</b></summary>
+
+- **Installation:**
+  - **From a clone:** open `gemini` inside the cloned repo and accept the workspace trust prompt (or trust the folder via `/permissions`). Gemini CLI discovers `.agents/skills/lemo-opuscar/` natively once the workspace is trusted.
+  - **From GitHub or a local checkout (any folder):**
+    ```sh
+    gemini skills install https://github.com/Maor-404/lemo-opuscar-for-agents.git --path .agents/skills/lemo-opuscar --scope user
+    ```
+    Or link your local clone so updates take effect immediately:
+    ```sh
+    gemini skills link /path/to/lemo-opuscar/.agents/skills/lemo-opuscar
+    ```
+- **Project / global skill directories:** `.agents/skills/lemo-opuscar/` (or `.gemini/skills/`) · `~/.agents/skills/lemo-opuscar/` or `~/.gemini/skills/lemo-opuscar/` (global).
+- **Special setup:**
+  - Untrusted workspaces skip project skills in Gemini CLI until the folder is trusted.
+  - The repository includes [`.gemini/settings.json`](.gemini/settings.json) (`"context": { "fileName": ["AGENTS.md", "GEMINI.md"] }`), so Gemini CLI autoloads `AGENTS.md` on workspace open while discovering `.agents/skills/lemo-opuscar/` natively without duplicating skills into `.gemini/skills/`. Once `lemo-opuscar` activates in any folder, `SKILL.md` also directs it to `$LIB/AGENTS.md`.
+- **Verify discovery:** Run `gemini skills list` in the repo root (in a trusted workspace, or for `--scope user` installs) or `/skills list` inside a session.
+- **Update:** `git pull` + `sh .agents/skills/lemo-opuscar/scripts/setup.sh deps` (or `python3 .agents/skills/lemo-opuscar/scripts/setup.py deps` on Windows) in a clone (or linked checkout), or re-run `gemini skills install ...`.
+
+</details>
+
+<details>
+<summary><b>OpenAI Codex CLI</b></summary>
+
+- **Installation:**
+  - **From a clone:** `git clone https://github.com/Maor-404/lemo-opuscar-for-agents.git` and start `codex` inside it. Codex walks from the current directory to the repo root, loading `.agents/skills/lemo-opuscar/` and `AGENTS.md` automatically.
+  - **Global install (any folder):** run `npx lemo-opuscar-for-agents init --scope global --agent codex`, copy `.agents/skills/lemo-opuscar/` to `~/.agents/skills/lemo-opuscar/`, or run:
+    ```sh
+    gh skill install Maor-404/lemo-opuscar-for-agents lemo-opuscar --agent codex --scope user
+    ```
+- **Project / global skill directories:** `.agents/skills/lemo-opuscar/` (project) · `~/.agents/skills/lemo-opuscar/` (global).
+- **Special setup:** Needs Node 20+, ffmpeg 7+, Python 3.11+ (or `uv`), and `python3 .agents/skills/lemo-opuscar/scripts/setup.py` on Windows when `sh` is not on PATH. The three ✦ styles invoke `core/image/gen_image.py` (`--provider auto|codex|openai|gemini`; `auto` uses signed-in `codex` CLI via `codex login` first, else `OPENAI_API_KEY`, else `GEMINI_API_KEY`/`GOOGLE_API_KEY`).
+- **Verify discovery:** Inside `codex`, run `/skills` or mention `$lemo-opuscar`.
+- **Update:** `git pull` + `sh .agents/skills/lemo-opuscar/scripts/setup.sh deps` in a clone, or `gh skill update lemo-opuscar` / re-copy `~/.agents/skills/lemo-opuscar/`.
+
+</details>
+
+<details>
+<summary><b>OpenCode</b></summary>
+
+- **Installation:**
+  - **From a clone:** open `opencode` inside the cloned repository. OpenCode discovers `.agents/skills/lemo-opuscar/SKILL.md` and `AGENTS.md` automatically.
+  - **Global install (any folder):** run `npx lemo-opuscar-for-agents init --scope global --agent opencode`, copy `.agents/skills/lemo-opuscar/` to `~/.config/opencode/skills/lemo-opuscar/` or `~/.agents/skills/lemo-opuscar/`, or run:
+    ```sh
+    gh skill install Maor-404/lemo-opuscar-for-agents lemo-opuscar --agent opencode --scope user
+    ```
+- **Project / global skill directories:** `.agents/skills/lemo-opuscar/` (also supports `.opencode/skills/`, `.claude/skills/`) · `~/.config/opencode/skills/lemo-opuscar/` or `~/.agents/skills/lemo-opuscar/` (global).
+- **Special setup:** Needs Node 20+, ffmpeg 7+, Python 3.11+ (or `uv`); on Windows PowerShell/CMD when `sh` is not on PATH, use `python3 .agents/skills/lemo-opuscar/scripts/setup.py` (locates Git Bash, MSYS2, or WSL).
+- **Verify discovery:** Start `opencode` inside the folder and check loaded skills or ask OpenCode to run the `lemo-opuscar` skill.
+- **Update:** `git pull` + `sh .agents/skills/lemo-opuscar/scripts/setup.sh deps` in a clone, or `gh skill update lemo-opuscar` / re-copy the global skill directory.
+
+</details>
+
+<details>
+<summary><b>GitHub Copilot (VS Code, Copilot CLI, Coding Agent)</b></summary>
+
+- **Installation:**
+  - **From a clone:** open the cloned repository in VS Code (with Copilot Agent Skills enabled), Copilot CLI, or a GitHub repo for Copilot coding agent. `.agents/skills/lemo-opuscar/` and `AGENTS.md` are discovered automatically.
+  - **Into another project or globally:** run `npx lemo-opuscar-for-agents init --scope global --agent copilot`, or use GitHub CLI (it auto-discovers the non-hidden `plugin/skills/lemo-opuscar/` mirror cleanly):
+    ```sh
+    gh skill install Maor-404/lemo-opuscar-for-agents lemo-opuscar --agent github-copilot --scope user
+    ```
+    (Omit `--scope user` to install into the current repo's `.agents/skills/lemo-opuscar/`.)
+- **Project / global skill directories:** `.agents/skills/lemo-opuscar/` (also supports `.github/skills/`, `.claude/skills/`) · `~/.copilot/skills/lemo-opuscar/` or `~/.agents/skills/lemo-opuscar/` (global personal).
+- **Special setup:** Requires a Copilot client with Agent Skills support enabled plus local Node 20+, ffmpeg 7+, Python 3.11+ (and `python3 .agents/skills/lemo-opuscar/scripts/setup.py` on Windows PowerShell/CMD when `sh` is not on PATH).
+- **Verify discovery:** In Copilot CLI run `/skills`; in VS Code open Copilot Chat Diagnostics / Configured Skills; for `gh skill` installs run `gh skill list`.
+- **Update:** `git pull` + `sh .agents/skills/lemo-opuscar/scripts/setup.sh deps` in a clone, or `gh skill update lemo-opuscar`.
+
+</details>
+
+<details>
+<summary><b>Claude Code</b></summary>
+
+- **Installation:**
+  - **Marketplace plugin (recommended for any folder):**
+    ```sh
+    claude plugin marketplace add Maor-404/lemo-opuscar-for-agents
+    claude plugin install lemo-opuscar@lemolab
+    ```
+  - **From a clone:** run `claude --plugin-dir ./plugin` inside the cloned repo (Claude Code also reads `CLAUDE.md`, which imports `@AGENTS.md`), or copy `.agents/skills/lemo-opuscar/` to `.claude/skills/lemo-opuscar/` / `~/.claude/skills/lemo-opuscar/` if using standalone skills instead of plugins.
+- **Project / global skill directories:** `plugin/skills/lemo-opuscar/` (plugin) or `.claude/skills/lemo-opuscar/` (standalone project) · Marketplace plugin `lemo-opuscar@lemolab` or `~/.claude/skills/lemo-opuscar/` (global).
+- **Special setup:** Recommended `/effort high`; needs Node 20+, ffmpeg 7+, Python 3.11+ (or `uv`).
+- **Verify discovery:** Run `/skills` or `/lemo-opuscar:lemo-opuscar` in Claude Code, or validate packaging with `claude plugin validate ./plugin`.
+- **Update:** `claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab` (or `/plugin` → **Marketplaces** → **Enable auto-update**); from a clone, `git pull` and `sh .agents/skills/lemo-opuscar/scripts/setup.sh deps`.
+
+</details>
+
+### Agent compatibility vs. model compatibility
+
+- **Agent compatibility** means the coding-agent harness discovers [`.agents/skills/lemo-opuscar/SKILL.md`](.agents/skills/lemo-opuscar/SKILL.md) (or the Claude plugin), executes its setup and rendering pipeline (`setup.sh` / `setup.py`, Node/Playwright, Python, `ffmpeg`), runs `core/image/gen_image.py` (`--provider auto|codex|openai|gemini`) for the three ✦ styles, and follows [`AGENTS.md`](AGENTS.md), [`DIRECTOR.md`](DIRECTOR.md), [`TECHNIQUE.md`](TECHNIQUE.md), and [`MY-STYLES.md`](MY-STYLES.md) — using structured question widgets when available and ordinary numbered prompts otherwise.
+- **Model compatibility** means how faithfully the underlying LLM designs shots, writes expressive Canvas/WebGL code, composes timing and sound, and preserves each style's look. The 99 styles were authored with Claude Opus 5.5 and verified with Claude Fable, Opus, and Sonnet; other capable coding/multimodal models can run the full film pipeline, though visual fidelity and adherence to style nuances vary by model.
 
 ## Make a style your own
 
@@ -121,7 +261,7 @@ Pick it after starting the skill, or say it in one line:
 
 > Start from a blank page: a chalk-on-blackboard style, warm and slow.
 
-To change a library style, it lists every style with the gallery link and you type the one to change. From a blank page, describe the look in your own words, or share a picture or a film you like; Claude picks the closest library style as the technique base, tells you why, and you agree or pick another. Then five steps:
+To change a library style, it lists every style with the gallery link and you type the one to change. From a blank page, describe the look in your own words, or share a picture or a film you like; your agent picks the closest library style as the technique base, tells you why, and you agree or pick another. Then five steps:
 
 1. **Plan it one question at a time.** What it's for (kinds of film; the platform, as vertical feeds want 1080×1920 or 1080×1440; brand colours, logo, fonts or recurring characters), what to change and which way, and last, a name. A library style is first sorted into **safe to change** (palette, type, pace, sound, signature moves), **changes its character** (materials and rendering, the colour logic, camera grammar) and **can't change** (the style's essence: change that and it's a different style). Each question has a few options, the recommended one first with the reason. Vague is fine: "more premium" or "livelier" becomes concrete changes to pick from. Choose "free conversation" to just talk it through, or say "you decide" at any point. At most five changes a round when changing a library style; everything is drawn in code, no image generation.
 2. **Review the summary**: each part before, after and what it costs. Nothing is written until you agree.
@@ -129,7 +269,7 @@ To change a library style, it lists every style with the gallery link and you ty
 4. **A 15–30 second demo film**, every change on screen, with music and sound effects. It checks the film and fixes it once before handing it over.
 5. **Keep it when you're happy**: keep it as my style, another round, or not now. Until you say yes, everything stays in that project's folder.
 
-A kept style lives in `~/lemo-my-styles/<name>/`, shaped like a library style (the style prompt, what changed, the demo film and its source), so later films can reuse the techniques. Name it like any other style: *"Make a 30-second film in my **Night Ukiyo-e** style about…"*; when you pick a style, your own are listed first. Library updates and reinstalling never touch them; when the base style is updated later, Claude mentions it once and asks whether to bring the useful fixes into your copy. The steps Claude follows are in [`MY-STYLES.md`](MY-STYLES.md).
+A kept style lives in `~/lemo-my-styles/<name>/`, shaped like a library style (the style prompt, what changed, the demo film and its source), so later films can reuse the techniques. Name it like any other style: *"Make a 30-second film in my **Night Ukiyo-e** style about…"*; when you pick a style, your own are listed first. Library updates and reinstalling never touch them; when the base style is updated later, your agent mentions it once and asks whether to bring the useful fixes into your copy. The steps your agent follows are in [`MY-STYLES.md`](MY-STYLES.md).
 
 ## The styles
 
@@ -324,15 +464,15 @@ A thank-you film at each milestone, made in code like everything here. Click a p
 
 I'm **Lemomo** ([@lemomo-ai](https://github.com/lemomo-ai)). More about me on my profile.
 
-**Not an awesome list.** Every film here was made by me, with Claude Opus 5.5, apart from two styles contributed from outside: Memphis Diorama by [@EianLu](https://x.com/EianLu) and Crayon World 3D by [@2nd1st](https://github.com/2nd1st). The styles were tuned with Opus 5.5 and work with Claude Fable, Opus and Sonnet; other models may not reproduce them.
+**Not an awesome list.** Every demo film here was made by me with Claude Opus 5.5, apart from two styles contributed from outside: Memphis Diorama by [@EianLu](https://x.com/EianLu) and Crayon World 3D by [@2nd1st](https://github.com/2nd1st). The skill and pipeline now support multiple coding agents, while the styles themselves were tuned on Opus 5.5 and work best with Claude Fable, Opus and Sonnet; other models may produce different visual results.
 
 ## Licence
 
-Made by **LemoLab × Claude Opus 5.5**.
+Made by **LemoLab × Claude Opus 5.5**. **Lemo Opuscar for Agents** (`Maor-404/lemo-opuscar-for-agents` / npm `lemo-opuscar-for-agents`) is a community fork of **Lemo-Opuscar by Lemomo (LemoLab)** ([`github.com/lemomo-ai/lemo-opuscar`](https://github.com/lemomo-ai/lemo-opuscar)) adding multi-agent `.agents/skills/` distribution, `.gemini/settings.json` context autoload, Windows `setup.py` bootstrap, multi-provider image generation, and the `bin/cli.mjs` npm CLI while keeping all original licences and upstream attributions intact.
 
 [`LICENSE`](LICENSE) says which licence applies to which file; the full texts are in [`LICENSES/`](LICENSES), and [`REUSE.toml`](REUSE.toml) gives the same rules file by file. In short:
 
-- **Code**: [MIT](LICENSES/MIT.txt). The code in `core/`, `tools/`, `styleboard/`, the scripts in `plugin/` and each demo's code, with the data, configuration and `CREDITS` that go with it (Clawd and the Claude app interface that Mascot Screencast's code draws are not covered: see [`LICENSE`](LICENSE)).
+- **Code**: [MIT](LICENSES/MIT.txt). The code in `core/`, `tools/`, `styleboard/`, the skill scripts in `.agents/skills/` and `plugin/`, and each demo's code, with the data, configuration and `CREDITS` that go with it (Clawd and the Claude app interface that Mascot Screencast's code draws are not covered: see [`LICENSE`](LICENSE)).
 - **Docs**: [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). Every Markdown file (each style's `STYLE.md` and `DEMO.md`, the guides `AGENTS.md`, `DIRECTOR.md`, `TECHNIQUE.md`, `MY-STYLES.md` …) and the image-generation prompts. You may share and adapt them for non-commercial purposes; credit **Lemo-Opuscar by Lemomo (LemoLab)** with a link to this repository and to the licence, and say if you changed them. On top of that licence, we give you and the people working with you on a film (staff, contractors, the client) a worldwide, royalty-free, non-exclusive, irrevocable permission to read, follow, copy and adapt them to make your own films, commercial and client films included, and to include them, or versions you adapted, in the project files you deliver for that film; a style you change and keep as your own counts ([Make a style your own](#make-a-style-your-own)). That extra permission doesn't cover sharing them or adapted versions with anyone beyond those people and those project files, or selling them. Any other commercial use (for example selling them, or putting them, whole, in part or adapted, into a product or service run for commercial advantage, paid or not) needs a commercial licence: email [lemomo.studio@gmail.com](mailto:lemomo.studio@gmail.com).
 - **Demo films, their posters, stills and subtitles, and the pictures made from them** (in `styles/`, `docs/`, the gallery and the Releases): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You may share, adapt and use them commercially; credit **Lemo-Opuscar by Lemomo (LemoLab)** with a link to this repository and to the licence, and say if you changed them. Third-party footage, photographs, satellite imagery, music and maps in them keep their own licences (see the film's `CREDITS`); Clawd, Anthropic's character in OPUSCAR 98, the thank-you films and Mascot Screencast, is not covered, nor are third-party product interfaces, names and logos, such as Anthropic's Claude app interface in Mascot Screencast (see [`LICENSE`](LICENSE)).
 - **The two contributed styles**: the same terms; credit their author too: *Memphis Diorama by EianLu, in Lemo-Opuscar by Lemomo (LemoLab)* and *Crayon World 3D by 2nd1st, in Lemo-Opuscar by Lemomo (LemoLab)*.

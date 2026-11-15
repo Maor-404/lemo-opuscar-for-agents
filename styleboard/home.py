@@ -36,8 +36,8 @@ LATIN = ''.join(chr(c) for c in range(0x20, 0x7f)) + ' ©®°±·×é–—‘�
 # (English, 中文). Reused from styleboard/gallery.py where the old site had the same thing; new lines are short and plain.
 T = {
     'title': ('Lemo-Opuscar · The Workbench: {n} film styles for your coding agent', 'Lemo-Opuscar · 电影工坊：{n} 种影片风格'),
-    'desc': ('A library of {n} film styles for Claude Code and other coding agents. Walk the bench: {c} stations, one per category, each with a short film made entirely in code.',
-             '{n} 种影片风格，给 Claude Code 等编程 agent 用。沿着工作台走一遍：{c} 个工位，一类一个，每种风格都配一支完全用代码做成的短片。'),
+    'desc': ('A library of {n} film styles for coding agents (Google Antigravity, Gemini CLI, OpenAI Codex CLI, OpenCode, GitHub Copilot, and Claude Code). Walk the bench: {c} stations, one per category, each with a short film made entirely in code.',
+             '{n} 种影片风格，支持 Google Antigravity、Gemini CLI、OpenAI Codex CLI、OpenCode、GitHub Copilot 与 Claude Code 等编程 agent。沿着工作台走一遍：{c} 个工位，一类一个，每种风格都配一支完全用代码做成的短片。'),
     'house': ('The Workbench', '电影工坊'),
     'skip': ('Skip to the first station', '跳到第一个工位'),
     'search_ph': ('Search {n} styles', '搜索 {n} 种风格'),
@@ -49,8 +49,8 @@ T = {
     'lang_other': ('中文', 'EN'),
     'hero_meta': ('{n} film styles', '{n} 种影片风格'), 'hero_meta2': ('{c} stations', '{c} 个工位'),
     'hero_h1': ('Pick a style.<br>Bring your story.<br><em>Your agent makes the film.</em>', '拍一个属于<br><em>你自己的电影</em>'),
-    'hero_lead': ('A library of {n} film styles for Claude Code and other coding agents, each with a short film made entirely in code.',
-                  '{n} 个风格，{n} 种创意。挑一个风格，讲你的故事，片子交给 Claude 拍。'),
+    'hero_lead': ('A library of {n} film styles for coding agents (Antigravity, Gemini CLI, Codex CLI, OpenCode, GitHub Copilot, and Claude Code), each with a short film made entirely in code.',
+                  '{n} 个风格，{n} 种创意。挑一个风格，讲你的故事，片子交给你的编程 agent 拍。'),
     'cue': ('Scroll to walk the bench', '往下滚，沿着工作台走一遍'),
     'toc': ('Contents', '目录'), 'toc_meta': ('{c} stations · {n} styles', '{c} 个工位 · {n} 种风格'),
     'toc_go': ('Go to station {nn}, {name}: {count} styles', '去工位 {nn}「{name}」，{count} 种风格'),

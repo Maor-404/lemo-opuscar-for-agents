@@ -1,0 +1,73 @@
+# Validates multi-agent skill packaging, .agents/ to plugin/ sync parity, setup shell syntax, and repository hygiene.
+name: skills
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.agents/**'
+      - 'plugin/**'
+      - '.claude-plugin/**'
+      - '.gemini/settings.json'
+      - 'AGENTS.md'
+      - 'DIRECTOR.md'
+      - 'TECHNIQUE.md'
+      - 'MY-STYLES.md'
+      - 'README*.md'
+      - 'core/README.md'
+      - 'tools/*_skills.py'
+      - 'tools/directory.py'
+      - 'tools/directory/**'
+      - 'tools/release.py'
+      - '.github/workflows/skills.yml'
+  pull_request:
+    paths:
+      - '.agents/**'
+      - 'plugin/**'
+      - '.claude-plugin/**'
+      - '.gemini/settings.json'
+      - 'AGENTS.md'
+      - 'DIRECTOR.md'
+      - 'TECHNIQUE.md'
+      - 'MY-STYLES.md'
+      - 'README*.md'
+      - 'core/README.md'
+      - 'tools/*_skills.py'
+      - 'tools/directory.py'
+      - 'tools/directory/**'
+      - 'tools/release.py'
+      - '.github/workflows/skills.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skills-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: skill sync
+        run: python3 tools/sync_skills.py --check
+      - name: validate skills
+        run: python3 tools/validate_skills.py
+      - name: setup.sh syntax
+        run: |
+          for f in \
+            .agents/skills/lemo-opuscar/scripts/setup.sh \
+            plugin/skills/lemo-opuscar/scripts/setup.sh \
+            tools/directory/setup.sh \
+            tools/directory/library-setup.sh; do
+            sh -n "$f"
+          done
+      - name: gemini settings json
+        run: python3 -c 'import json; json.load(open(".gemini/settings.json", encoding="utf-8"))'
+      - name: release check
+        run: python3 tools/release.py check

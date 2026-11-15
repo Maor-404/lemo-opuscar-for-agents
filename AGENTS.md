@@ -18,8 +18,8 @@ This repository is a library of film styles. Each style has a `styles/<slug>/STY
 ## Start
 
 - **Their own styles first.** If `~/lemo-my-styles/README.md` exists, read it: it lists every style the user has saved, wherever it's kept, and their own styles ([`MY-STYLES.md`](MY-STYLES.md)) count like library styles. When they name a style, look there first, then in the library.
-- **Their language.** Talk to them in the language they write in. When they started the skill without writing anything, your first question is always the language, even when their settings, memory or earlier messages suggest one: the `AskUserQuestion` tool, a question of its own headed "Language 语言" with two options, 中文 and English (the tool adds Other, where they type any other language). Use it from then on, and as the film's default language.
-- **No request yet** (they only started the skill, or said hello): offer the ways in with one question, using the `AskUserQuestion` tool, in their language, with the first as the recommended one:
+- **Their language.** Talk to them in the language they write in. When they started the skill without writing anything, your first question is always the language, even when their settings, memory or earlier messages suggest one: if your agent offers a structured question interface (such as `AskUserQuestion`), ask a question of its own headed "Language 语言" with two options, 中文 and English (allowing a typed Other response if supported); otherwise ask in ordinary plain text with `1. 中文` and `2. English` (plus any other language they want to type). Use it from then on, and as the film's default language.
+- **No request yet** (they only started the skill, or said hello): offer the ways in with one question (using your agent's structured question tool if available, or a numbered plain-text list otherwise), in their language, with the first marked as recommended:
   1. a film in a library style (**Finding the style**);
   2. change a library style and keep it as their own ([`MY-STYLES.md`](MY-STYLES.md));
   3. make their own style from a blank page ([`MY-STYLES.md`](MY-STYLES.md));
@@ -44,7 +44,7 @@ If the user hasn't picked a style:
 - If they have their own styles, list those first, under "My styles" (in their language).
 - Show them the full list below in the chat, in the user's language only: English names (and English category names) for someone writing in English, Chinese names for someone writing in Chinese. Don't drop, merge or rename anything.
 - Link the gallery, where every style has its demo film: https://lemomo-ai.github.io/lemo-opuscar/
-- Then ask them to type the name. The list goes in your own message (a command's output isn't shown to them), and the question is plain text, not `AskUserQuestion`: its few options would hide the rest of the list.
+- Then ask them to type the name. The list goes in your own message (a command's output isn't shown to them), and ask in plain text rather than a multiple-choice question widget: its few options would hide the rest of the list.
 
 <!-- style-list:start -->
 All 99 styles · 全部风格:
@@ -65,7 +65,7 @@ All 99 styles · 全部风格:
 - **仪器实证 Instruments & Evidence** (8): 卫星简报 Satellite Briefing, 工程简报板 Engineering Briefing Board, 点云测绘 LiDAR Survey, 显微镜下 Under the Microscope, 档案看片台 Archive Light Table, 安检 X 光 Security X-ray, 雷达扫描纪录片 Radar Sweep Documentary, 热成像 Thermal Camera
 - **数据地图 Data & Maps** (6): 数据叙事 Data Storytelling, 白模投影 Projection-Mapped Model, 数据实物化 Data Physicalization, 地铁线路图 Transit Map, 立体地图解说 3D Map Explainer, 小人模拟实验 Blob Simulation
 
-✦ draws with an image generator: the user's Codex CLI, or another image tool they have. Without one the film cannot start (core/README.md, "Image generation"). Say so when you suggest the style.
+✦ draws with an image generator: signed-in Codex CLI, an OpenAI/Gemini API key, or another image tool they have. Without one the film cannot start (core/README.md, "Image generation"). Say so when you suggest the style.
 <!-- style-list:end -->
 
 ## Workflow
@@ -75,10 +75,10 @@ All 99 styles · 全部风格:
    - whether they have material of their own: a voice recording or a preferred voice, music, photos, logos, fonts, and for a style built from real material, their own data or scans;
    - the film's language, if it isn't obvious (default: the language they write in or chose, for voice and subtitles);
    - whether they want to review a storyboard first (default: no);
-   - anything missing on their machine: before you ask, run `sh plugin/skills/lemo-opuscar/scripts/setup.sh` from the library root (no arguments: it takes seconds and lists every missing system tool at once) and include what it reports. Start `… setup.sh deps` (core only) in the background, if it isn't already running: it takes a few minutes the first time. Add the voice and music tiers later, only if the film needs them (TECHNIQUE.md §1);
+   - anything missing on their machine: before you ask, run `sh .agents/skills/lemo-opuscar/scripts/setup.sh` from the library root (or `sh "<skill directory>/scripts/setup.sh"` in skill mode; in Windows PowerShell/CMD when `sh` is not on PATH, run `python3 .agents/skills/lemo-opuscar/scripts/setup.py` or `python3 "<skill directory>/scripts/setup.py"`; no arguments: it takes seconds and lists every missing system tool at once) and include what it reports. Start `… setup.sh deps` (or `… setup.py deps`; core only) in the background if your environment supports it and it isn't already running: it takes a few minutes the first time. Add the voice and music tiers later, only if the film needs them (TECHNIQUE.md §1);
    - for a style marked ✦, how they will make the images, but only when the image check below fails.
 
-   **A style marked ✦ draws with an image generator** (its `style.json` says `"needs": ["image-generation"]`). Run `python3 core/image/gen_image.py --check` from the library root before you write the questions, next to `setup.sh`. If it fails, put its reason and the question in the same message: what will they make the images with instead (another image API or app, or their own drawings; you give them the prompts and the file names)? With no image generator at all, tell them plainly that a film in this style can't start, and offer two or three other styles that fit their topic. Never draw the characters in code as a stand-in.
+   **A style marked ✦ draws with an image generator** (its `style.json` says `"needs": ["image-generation"]`). Run `python3 core/image/gen_image.py --check` from the library root before you write the questions, next to `setup.sh` (supports `--provider auto|codex|openai|gemini` or `LEMO_IMAGE_PROVIDER`; `auto` checks signed-in Codex CLI first, then `OPENAI_API_KEY`, then `GEMINI_API_KEY`/`GOOGLE_API_KEY`). If it fails, put its reason and the question in the same message: whether they can sign in to Codex or set an OpenAI/Gemini API key, or what they will make the images with instead (another image API or app, or their own drawings; you give them the prompts and the file names)? With no image generator at all, tell them plainly that a film in this style can't start, and offer two or three other styles that fit their topic. Never draw the characters in code as a stand-in.
 
    Skip what their request already answers. Wait for the reply, fill every other gap with a sensible default, sum up the brief in a few lines and start. Don't come back with more questions.
 2. **Treatment.** Write `TREATMENT.md` in the project folder (DIRECTOR.md §4), before you open the demo (an Edit & Documentary style gathers its material first: **Treatment first** above).

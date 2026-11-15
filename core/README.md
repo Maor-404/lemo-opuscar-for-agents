@@ -6,7 +6,7 @@ Command reference for `core/` and `tools/`. How the pieces fit together is in [`
 
 | Command | What it does |
 |---|---|
-| `sh plugin/skills/lemo-opuscar/scripts/setup.sh` | find, clone or update the library; prints `LIB=<path>` |
+| `sh .agents/skills/lemo-opuscar/scripts/setup.sh` | find, clone or update the library; prints `LIB=<path>` |
 | `… setup.sh deps` | core tier: npm packages, headless browser, `.venv` from `requirements.txt` |
 | `… setup.sh deps voice` | adds `requirements-voice.txt` (kokoro-onnx, edge-tts, faster-whisper) and the Kokoro model |
 | `… setup.sh deps music` | adds `requirements-music.txt` (numba, for `pluck.py`; `sampler.py` needs only the core) |
@@ -71,12 +71,15 @@ The styles marked ✦ in the style list (`"needs": ["image-generation"]` in thei
 
 | Command | What it does |
 |---|---|
-| `python3 core/image/gen_image.py --check` | is the Codex CLI installed and signed in? Exit 0 if so, 4 if not, with a different message for "not installed" and "not signed in". The first real image confirms that the account can generate images |
-| `python3 core/image/gen_image.py "<prompt>" --aspect 16:9 --out "<project>/gen" --name <base> [--ref <image> …] [--edit]` | one image through `codex exec` (read-only sandbox, its built-in `image_gen`) → `<project>/gen/<base>_<date-time>.png`, path printed. `--ref` attaches a reference sheet (repeatable); `--edit` changes the first `--ref` and keeps the rest of it. A wrong aspect is retried, then kept as `…_wrongaspect.png`. Exit 2 no image, 3 wrong aspect, 4 setup (no Codex, a missing reference, a bad argument) |
+| `python3 core/image/gen_image.py --check [--provider auto\|codex\|openai\|gemini]` | is an image provider ready? Checks signed-in Codex CLI, `OPENAI_API_KEY`, or `GEMINI_API_KEY` / `GOOGLE_API_KEY` (according to `--provider` or `LEMO_IMAGE_PROVIDER`, default `auto`). Exit 0 if ready, 4 if not, with setup instructions. The first real image confirms that the account can generate images |
+| `python3 core/image/gen_image.py "<prompt>" [--provider auto\|codex\|openai\|gemini] --aspect 16:9 --out "<project>/gen" --name <base> [--ref <image> …] [--edit]` | one image → `<project>/gen/<base>_<date-time>.png`, path printed. `auto` uses signed-in `codex` first, else `OPENAI_API_KEY`, else `GEMINI_API_KEY` / `GOOGLE_API_KEY`. `--ref` attaches a reference sheet (repeatable); `--edit` changes the first `--ref` and keeps the rest of it. A wrong aspect is retried, then kept as `…_wrongaspect.png`. Exit 2 no image, 3 wrong aspect, 4 setup (no provider configured, a missing reference, a bad argument) |
 
-- **Codex CLI**: installed, and signed in (`codex login`) to an account that can generate images. A failed generation prints Codex's own error (no credits, no access).
-- **Another image tool** (an image API or app, or the user's own drawings): the style's `STYLE.md` gives the prompts, sizes and file names; the user makes the images there and saves them under those names.
+- **Codex CLI (`--provider codex`)**: installed, and signed in (`codex login`) to an account that can generate images (`codex exec` in a read-only sandbox with its built-in `image_gen`). A failed generation prints Codex's own error (no credits, no access).
+- **OpenAI Images API (`--provider openai`)**: `OPENAI_API_KEY` set (zero extra dependencies; uses `/v1/images/generations` and `/v1/images/edits`; optional `LEMO_OPENAI_IMAGE_MODEL`, default `gpt-image-2.5-flare`, and `OPENAI_BASE_URL`).
+- **Google Gemini API (`--provider gemini`)**: `GEMINI_API_KEY` or `GOOGLE_API_KEY` set (zero extra dependencies; uses Gemini image generation `generateContent`; optional `LEMO_GEMINI_IMAGE_MODEL`, default `gemini-3.1-flash-image`, and `GEMINI_BASE_URL`).
+- **Another image tool** (another image API or app, or the user's own drawings): the style's `STYLE.md` gives the prompts, sizes and file names; the user makes the images there and saves them under those names.
 - **Neither**: a film in that style cannot start. Say so in the brief and offer other styles that fit the topic; never draw stand-in characters in code.
+- Set `LEMO_IMAGE_PROVIDER=auto|codex|openai|gemini` to choose a default provider without passing `--provider` on every call (`--provider` overrides it).
 - Prompts and reference images go to the image service the user chose. Before generating, tell the user how many images and of what.
 
 ## Environment variables

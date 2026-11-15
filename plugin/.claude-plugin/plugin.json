@@ -1,8 +1,8 @@
 {
   "name": "lemo-opuscar",
-  "description": "Make a film in one of the library's code-rendered styles: your agent directs, draws, scores and mixes it.",
+  "description": "Lemo Opuscar for Agents — make a film in one of the library's code-rendered styles across AI coding agents (based on Lemo-Opuscar by Lemomo / LemoLab).",
   "author": { "name": "Lemomo", "url": "https://github.com/lemomo-ai" },
-  "homepage": "https://lemomo-ai.github.io/lemo-opuscar/",
-  "repository": "https://github.com/lemomo-ai/lemo-opuscar",
+  "homepage": "https://github.com/Maor-404/lemo-opuscar-for-agents",
+  "repository": "https://github.com/Maor-404/lemo-opuscar-for-agents",
   "license": "MIT AND CC-BY-NC-4.0"
 }

@@ -1,23 +1,23 @@
 <div align="center">
 
-<a href="https://lemomo-ai.github.io/lemo-opuscar/zh/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cover-zh-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cover-zh-light.webp"><img src="docs/cover.jpg" width="100%" alt="Lemo-Opuscar：夜里的长木台，木活字排着 OPUSCAR"></picture></a>
+<a href="https://lemomo-ai.github.io/lemo-opuscar/zh/"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/readme/cover-zh-dark.webp"><source media="(prefers-color-scheme: light)" srcset="docs/readme/cover-zh-light.webp"><img src="docs/cover.jpg" width="100%" alt="Lemo Opuscar for Agents：夜里的长木台，木活字排着 OPUSCAR"></picture></a>
 
-# Lemo-Opuscar
+# Lemo Opuscar for Agents
 
 **<!--n-->99<!--/n--> 种影片风格，交给你的编程 agent。挑一个风格，带上你的故事，agent 用代码把整支片做出来。**
 
+<sub>基于 Lemomo（LemoLab）的 <a href="https://github.com/lemomo-ai/lemo-opuscar">Lemo-Opuscar</a> 复刻，新增多 AI 编程 Agent 兼容与 <code>lemo-opuscar-for-agents</code> npm CLI · <a href="https://github.com/Maor-404/lemo-opuscar-for-agents">github.com/Maor-404/lemo-opuscar-for-agents</a></sub>
+
 [**▶ 打开画廊**](https://lemomo-ai.github.io/lemo-opuscar/zh/) · [English README](README.md) · [English gallery](https://lemomo-ai.github.io/lemo-opuscar/)
 
-<a href="https://trendshift.io/repositories/262645?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-262645" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/262645/daily?language=JavaScript" alt="lemomo-ai%2Flemo-opuscar | Trendshift" width="250" height="55"/></a>
-
-<sub>官方仓库：[github.com/lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) · 作者 Lemomo（[@lemomo_ai](https://x.com/lemomo_ai)）</sub>
+<sub>复刻仓库：[github.com/Maor-404/lemo-opuscar-for-agents](https://github.com/Maor-404/lemo-opuscar-for-agents) · npm：`lemo-opuscar-for-agents` · 上游原作：[github.com/lemomo-ai/lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar)（作者 Lemomo [@lemomo_ai](https://x.com/lemomo_ai)）</sub>
 
 </div>
 
 > [!IMPORTANT]
 > **这一版经 Claude Fable 5.2 审计和改进。**
 >
-> **本插件为 Claude 专用。** Claude Fable、Opus、Sonnet 都能用，推理强度（effort）建议选 **high**（在 Claude Code 里输入 `/effort high`）。其他模型适配度不高，请谨慎使用。
+> **Agent 兼容性与模型兼容性是两回事：** Lemo-Opuscar 现以开放 [Agent Skills](https://agentskills.io) 标准发布（`.agents/skills/lemo-opuscar/` + `AGENTS.md`），同时保留 Claude Code 插件，支持 **Google Antigravity**、**Gemini CLI**、**OpenAI Codex CLI**、**OpenCode**、**GitHub Copilot** 和 **Claude Code**（见[支持的 AI 编程 Agent](#支持的-ai-编程-agent)）。画面风格还原度仍取决于底层**模型**：这 99 种风格最初基于 Claude Opus 5.5 调校，配合 Claude Fable、Opus、Sonnet 效果最好（建议将推理强度设为 **high**，例如在 Claude Code 中输入 `/effort high`）。其他模型也可以跑通整套流程，但风格还原度和画面表现会因模型而异。
 
 ## 🆕 最新
 
@@ -42,26 +42,42 @@
 
 ### 安装
 
-**装成 skill（推荐）。** 在终端里：
+**通过 npm / npx 一键安装（任意项目目录或全局 agent 目录）：**
 
 ```sh
-claude plugin marketplace add lemomo-ai/lemo-opuscar
+npx lemo-opuscar-for-agents init
+# 或全局安装到全部支持的 agent：
+npx lemo-opuscar-for-agents init --scope global --agent all
+# 查看风格与环境检查：
+npx lemo-opuscar-for-agents styles
+npx lemo-opuscar-for-agents doctor
+```
+
+**或直接 clone 仓库（适合所有原生支持 `.agents/skills/` 的 agent）：** 片子做到仓库里的 `films/<名字>/`。
+
+```sh
+git clone https://github.com/Maor-404/lemo-opuscar-for-agents.git
+cd lemo-opuscar-for-agents
+```
+
+用 Google Antigravity、Gemini CLI、OpenAI Codex CLI、OpenCode 或 GitHub Copilot（VS Code / CLI）打开这个文件夹即可开始做片——[`.agents/skills/lemo-opuscar/`](.agents/skills/lemo-opuscar/) 里的 skill 和 [`AGENTS.md`](AGENTS.md) 会自动被发现。如果用 Claude Code 打开 clone 仓库，执行 `claude --plugin-dir ./plugin`。
+
+**或者直接安装 skill，在任意文件夹里都能用：** 第一次使用时，它会把指南、工具和风格提示词下载到 `~/lemo-opuscar`（可用 `LEMO_OPUSCAR_HOME` 自定义），所有片子共用这一份；每支片子的工程，从源码到成片，都放在你发起时所在的文件夹里：
+
+- **Claude Code 插件市场：**
+
+```sh
+claude plugin marketplace add Maor-404/lemo-opuscar-for-agents
 claude plugin install lemo-opuscar@lemolab
 ```
 
-之后在任何目录都能用。第一次使用时，它会把指南、工具和风格提示词下载到 `~/lemo-opuscar`，所有片子共用这一份；每支片子的工程，从源码到成片，都放在你发起时所在的文件夹里。其他 agent 可以把 [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/) 复制到它们的 skills 目录。
-
-**或者 clone 仓库。** 片子做到仓库里的 `films/<名字>/`。
-
-```sh
-git clone https://github.com/lemomo-ai/lemo-opuscar.git
-cd lemo-opuscar
-claude
-```
+- **其他 agent（Antigravity、Gemini CLI、Codex CLI、OpenCode、GitHub Copilot）：** 见下方[支持的 AI 编程 Agent](#支持的-ai-编程-agent)中的各平台全局安装路径、验证方式和更新方法。
 
 ### 更新和卸载
 
-更新，然后重启 Claude Code（`~/lemo-opuscar` 里的库会在下一次做片时自动更新）：
+用 clone 的：`git pull`，然后跑一次 `sh .agents/skills/lemo-opuscar/scripts/setup.sh deps`（Windows PowerShell/CMD 若 PATH 里没有 `sh`，改跑 `python3 .agents/skills/lemo-opuscar/scripts/setup.py deps`；只更新有变化的核心包；装过配音或音乐包的，改跑 `… deps voice music`）。
+
+**Claude Code 插件市场安装的用户：** 更新，然后重启 Claude Code（`~/lemo-opuscar` 里的库会在下一次做片时自动更新）：
 
 ```sh
 claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@lemolab
@@ -69,21 +85,19 @@ claude plugin marketplace update lemolab && claude plugin update lemo-opuscar@le
 
 想让它自动更新：在 Claude Code 里输入 `/plugin`，进 **Marketplaces**，选 **lemolab**，点 **Enable auto-update**（lemolab 这类第三方 marketplace 默认不自动更新，要自己打开）。
 
-用 clone 的：`git pull`，然后跑一次 `sh plugin/skills/lemo-opuscar/scripts/setup.sh deps`（只更新有变化的核心包；装过配音或音乐包的，改跑 `… deps voice music`）。
-
-更新后照常说要做什么片；想把风格改成自己的，看[下面](#改成你自己的风格)。
-
-卸载，然后删除 `~/lemo-opuscar`：
+卸载 Claude Code 插件，然后删除 `~/lemo-opuscar`：
 
 ```sh
 claude plugin uninstall lemo-opuscar@lemolab
 ```
 
+其他 agent 的更新方式见[支持的 AI 编程 Agent](#支持的-ai-编程-agent)。更新后照常说要做什么片；想把风格改成自己的，看[下面](#改成你自己的风格)。
+
 你自己的风格存在 `~/lemo-my-styles/`，更新和卸载都不会删；不要了就自己删掉这个文件夹。一直卡住就[提个 issue](https://github.com/lemomo-ai/lemo-opuscar/issues)。
 
 ### 接下来会发生什么
 
-还没想好也没关系：装成 skill 的，输入 `/lemo-opuscar:lemo-opuscar` 直接启动。它先问你用什么语言，再问这次想做什么：用库里的风格做片、[把风格改成你自己的](#改成你自己的风格)，或者用你存过的风格。
+还没想好也没关系：不带具体要求直接触发 skill（比如在 Claude Code 输入 `/lemo-opuscar:lemo-opuscar`、在 Codex CLI 输入 `$lemo-opuscar`，或让你的 agent 启动 Lemo-Opuscar）。它先问你用什么语言，再问这次想做什么：用库里的风格做片、[把风格改成你自己的](#改成你自己的风格)，或者用你存过的风格。
 
 它开工前只问你一次：主题里它定不了的事；你有没有自己的**配音、音乐或其他素材**；要不要先看**分镜故事板**（要看的话，它会停一次，给你看用真实风格画出来的关键镜头；不看就直接做完成片）。
 
@@ -100,9 +114,41 @@ claude plugin uninstall lemo-opuscar@lemolab
 ### 开始之前
 
 - 一支片子 agent 大约要做 30–60 分钟，token 用量不小。
-- 需要 Node 20+、ffmpeg 7+ 和 Python 3.11+（或 [uv](https://docs.astral.sh/uv/)），其余由 agent 安装。Ubuntu 24.04 自带的 ffmpeg 是 6.1，版本太旧，请换成[静态版](https://johnvansickle.com/ffmpeg/)。
-- 有三个风格的人物要用生图工具画，需要你自己提供（黑白漫画分格、文字闪切、搞笑历史卡通，在[风格清单](styles/README.md)里标 ✦）：登录了能生图账号的 [Codex CLI](https://github.com/openai/codex)，或者你手上别的生图工具。没有的话这三个风格没法开始；其余风格都用不到。
+- 需要 Node 20+、ffmpeg 7+ 和 Python 3.11+（或 [uv](https://docs.astral.sh/uv/)），其余由 agent 安装。Ubuntu 24.04 自带的 ffmpeg 是 6.1，版本太旧，请换成[静态版](https://johnvansickle.com/ffmpeg/)。Windows PowerShell/CMD 若 PATH 里没有 `sh`，运行 `python3 .agents/skills/lemo-opuscar/scripts/setup.py`（会自动定位 Git Bash、MSYS2 或 WSL）。
+- 有三个风格的人物要用生图工具画，需要你自己提供（黑白漫画分格、文字闪切、搞笑历史卡通，在[风格清单](styles/README.md)里标 ✦）：`core/image/gen_image.py` 支持 `--provider auto|codex|openai|gemini`（或 `LEMO_IMAGE_PROVIDER`；`auto` 依次使用已登录的 [Codex CLI](https://github.com/openai/codex)、`OPENAI_API_KEY` 或 `GEMINI_API_KEY`/`GOOGLE_API_KEY`），也可以用你自己的其他生图工具。没有的话这三个风格没法开始；其余风格都用不到。
 - 默认输出 1920×1080、24 fps（有些风格自带帧率，比如 30 fps），其他尺寸可以指定。
+
+## 支持的 AI 编程 Agent
+
+Lemo-Opuscar 使用开放 [Agent Skills](https://agentskills.io) 标准，以 [`.agents/skills/lemo-opuscar/`](.agents/skills/lemo-opuscar/) 作为统一规范源，并通过 `tools/sync_skills.py` 确定性同步到 [`plugin/skills/lemo-opuscar/`](plugin/skills/lemo-opuscar/)，供 Claude Code 插件和非隐藏目录 CLI 安装器直接发现。
+
+如果你已经 clone 本仓库并作为工作区打开，支持自动扫描 `.agents/skills/` 的编程 agent 无需额外配置即可直接使用，**不需要**另装 Claude Code 插件。
+
+| 平台 | 推荐安装方式（任意目录 / clone 工作区） | 项目级 skill 目录 | 全局安装目录 | 发现验证方法 |
+|---|---|---|---|---|
+| **Google Antigravity**（IDE 与 CLI `agy`） | 打开 clone 目录，或复制到全局目录 / `gh skill install` | `.agents/skills/lemo-opuscar/` | `~/.gemini/config/skills/lemo-opuscar/` | IDE 中查看已加载 skills，或运行 `agy` 询问可用的影片 skill |
+| **Gemini CLI** | 在已信任的 clone 目录运行，或 `gemini skills install` | `.agents/skills/lemo-opuscar/` | `~/.agents/skills/lemo-opuscar/` 或 `~/.gemini/skills/lemo-opuscar/` | 运行 `gemini skills list`（或会话内输入 `/skills list`） |
+| **OpenAI Codex CLI** | 在 clone 目录运行，或复制到全局目录 / `gh skill install` | `.agents/skills/lemo-opuscar/` | `~/.agents/skills/lemo-opuscar/` | 会话内 `/skills` 或直接输入 `$lemo-opuscar` |
+| **OpenCode** | 在 clone 目录运行，或复制到全局目录 / `gh skill install` | `.agents/skills/lemo-opuscar/` | `~/.config/opencode/skills/lemo-opuscar/` 或 `~/.agents/skills/lemo-opuscar/` | 在工作区启动 `opencode` 并确认 `lemo-opuscar` skill |
+| **GitHub Copilot**（VS Code、CLI、Coding Agent） | 打开 clone 目录，或 `gh skill install ... --agent github-copilot` | `.agents/skills/lemo-opuscar/` | `~/.copilot/skills/lemo-opuscar/` 或 `~/.agents/skills/lemo-opuscar/` | CLI 中 `/skills`、VS Code 诊断视图或 `gh skill list` |
+| **Claude Code** | `claude plugin marketplace add` / `install`，或 `claude --plugin-dir ./plugin` | `plugin/skills/lemo-opuscar/`（插件）或 `.claude/skills/lemo-opuscar/` | 插件市场 `lemo-opuscar@lemolab` 或 `~/.claude/skills/lemo-opuscar/` | `/skills`、`/lemo-opuscar:lemo-opuscar` 或 `claude plugin validate ./plugin` |
+
+### Agent 兼容性与模型兼容性
+
+- **Agent 兼容性**指该工具能否正确发现 [`.agents/skills/lemo-opuscar/SKILL.md`](.agents/skills/lemo-opuscar/SKILL.md)（或 Claude 插件）、运行安装和渲染工具链（`setup.sh` / `setup.py`、Node/Playwright、Python、`ffmpeg`），用 `core/image/gen_image.py`（`--provider auto|codex|openai|gemini`）处理三个 ✦ 风格，并按 [`AGENTS.md`](AGENTS.md)、[`DIRECTOR.md`](DIRECTOR.md)、[`TECHNIQUE.md`](TECHNIQUE.md)、[`MY-STYLES.md`](MY-STYLES.md) 走完制片流程（支持结构化提问组件的平台直接调用提问组件，不支持的平台改为纯文本编号提问）。
+- **模型兼容性**指底层大模型按风格规范编写 Canvas/WebGL 代码、编排镜头、设计声音并还原画风的能力。库内 99 种风格基于 Claude Opus 5.5 调校，并验证过 Claude Fable、Opus、Sonnet；其他强编程/多模态模型也能跑通制片流程，但视觉还原度与风格稳定性会因模型不同而有差异。
+
+<details>
+<summary><b>各平台详细安装与更新说明</b></summary>
+
+- **Google Antigravity（IDE 与 CLI）：** 打开 clone 仓库即可自动加载 `.agents/skills/lemo-opuscar/` 和 `AGENTS.md`；全局安装可运行 `npx lemo-opuscar-for-agents init --scope global --agent antigravity`、将 `.agents/skills/lemo-opuscar/` 复制到 `~/.gemini/config/skills/lemo-opuscar/`，或执行 `gh skill install Maor-404/lemo-opuscar-for-agents lemo-opuscar --agent antigravity --scope user`。更新：clone 中执行 `git pull && sh .agents/skills/lemo-opuscar/scripts/setup.sh deps`（Windows PowerShell/CMD 无 `sh` 时运行 `python3 .agents/skills/lemo-opuscar/scripts/setup.py deps`），全局目录则重新复制或 `gh skill update lemo-opuscar`。
+- **Gemini CLI：** 在信任的仓库工作区自动发现 `.agents/skills/lemo-opuscar/`；也可远程安装 `gemini skills install https://github.com/Maor-404/lemo-opuscar-for-agents.git --path .agents/skills/lemo-opuscar --scope user` 或本地链接 `gemini skills link <仓库路径>/.agents/skills/lemo-opuscar`。仓库内置了 [`.gemini/settings.json`](.gemini/settings.json)（`"context": { "fileName": ["AGENTS.md", "GEMINI.md"] }`），无需把 skill 复制到 `.gemini/skills/` 即可在打开信任工作区时自动加载 `AGENTS.md`（未信任目录会跳过项目 skill；任意目录触发 `lemo-opuscar` 后 `SKILL.md` 也会指引读取 `$LIB/AGENTS.md`）。验证：`gemini skills list`。
+- **OpenAI Codex CLI：** 在 clone 目录启动 `codex` 自动从当前目录向上查找 `.agents/skills/lemo-opuscar/` 和 `AGENTS.md`；全局安装可运行 `npx lemo-opuscar-for-agents init --scope global --agent codex` 或复制到 `~/.agents/skills/lemo-opuscar/`（或 `gh skill install Maor-404/lemo-opuscar-for-agents lemo-opuscar --agent codex --scope user`）。Windows 若 PATH 中无 `sh`，运行 `python3 .agents/skills/lemo-opuscar/scripts/setup.py`；标 ✦ 的三个生图风格通过 `core/image/gen_image.py`（`--provider auto|codex|openai|gemini`）优先调用已登录的 `codex exec`（`codex login`），也支持 `OPENAI_API_KEY` 或 `GEMINI_API_KEY`/`GOOGLE_API_KEY`。验证：会话中 `/skills` 或 `$lemo-opuscar`。
+- **OpenCode：** 在 clone 目录启动 `opencode` 自动加载 `.agents/skills/lemo-opuscar/` 和 `AGENTS.md`；全局安装可运行 `npx lemo-opuscar-for-agents init --scope global --agent opencode` 或复制到 `~/.config/opencode/skills/lemo-opuscar/` 或 `~/.agents/skills/lemo-opuscar/`（或用 `gh skill install ... --agent opencode --scope user`）。Windows PowerShell/CMD 若 PATH 中无 `sh`，直接运行 `python3 .agents/skills/lemo-opuscar/scripts/setup.py`（自动定位 Git Bash、MSYS2 或 WSL）。
+- **GitHub Copilot：** 在支持 Agent Skills 的 VS Code Copilot、Copilot CLI 或 Copilot coding agent 中打开 clone 仓库即可使用 `.agents/skills/lemo-opuscar/` 和 `AGENTS.md`；安装到其他项目或全局可用 `npx lemo-opuscar-for-agents init --scope global --agent copilot` 或 `gh skill install Maor-404/lemo-opuscar-for-agents lemo-opuscar --agent github-copilot --scope user`。Windows PowerShell/CMD 无 `sh` 时可用 `python3 .agents/skills/lemo-opuscar/scripts/setup.py`。更新：`gh skill update lemo-opuscar` 或更新 clone。
+- **Claude Code：** 保持原有市场插件体验（`claude plugin marketplace add Maor-404/lemo-opuscar-for-agents` && `claude plugin install lemo-opuscar@lemolab`），clone 目录中可用 `claude --plugin-dir ./plugin`（并通过 `CLAUDE.md` 自动引入 `@AGENTS.md`）。校验：`claude plugin validate ./plugin`。
+
+</details>
 
 ## 改成你自己的风格
 
@@ -119,7 +165,7 @@ claude plugin uninstall lemo-opuscar@lemolab
 
 > 从空白开始，做一个黑板粉笔画的风格，暖一点、慢一点。
 
-改库里的风格，它会列出全部风格和画廊链接，你打字说改哪一个。从空白开始，就用你自己的话描述想要的样子，也可以给一张喜欢的图或一支片；Claude 从库里挑一个最接近的风格当技法底子，说清楚为什么选它，你点头或者换一个。接下来五步：
+改库里的风格，它会列出全部风格和画廊链接，你打字说改哪一个。从空白开始，就用你自己的话描述想要的样子，也可以给一张喜欢的图或一支片；你的 agent 从库里挑一个最接近的风格当技法底子，说清楚为什么选它，你点头或者换一个。接下来五步：
 
 1. **一个问题一个问题定方案。** 拿来做什么（做什么片、发在哪个平台，竖屏就用 1080×1920 或 1080×1440；有没有品牌色、logo、字体或固定角色），想改哪里、往哪个方向改，最后起名字。改库里的风格时，它先把风格分成三组讲给你听：**放心改**（配色、字体、动作快慢、声音、标志镜头）、**一改就变味**（材质和画法、配色的逻辑、镜头语法）、**不能改**（风格的本质，改了就是另一个风格）。每个问题都带几个选项，推荐的排第一，附上理由。说得模糊也行，比如「高级一点」「活泼一点」，它会翻译成具体的改法让你挑。嫌慢就选每题最后的「自由对话」，直接聊；随时说「你定」，剩下的它按推荐填好。改库里风格时一轮最多改五处；全部用代码画，不用生图。
 2. **看汇总，点头。** 每一项改前是什么、改后是什么、代价是什么，你点头了它才写下来。
@@ -127,7 +173,7 @@ claude plugin uninstall lemo-opuscar@lemolab
 4. **一支 15–30 秒的 demo 片。** 每一处改动都在画面里出现，配音乐和音效。它自己检查、修一轮再交给你。
 5. **满意了再固化。** 它问你：固化、再改一轮，还是先不固化。你点头之前，一切都只在这次的项目文件夹里。
 
-固化以后，风格存在 `~/lemo-my-styles/<名字>/`，和库里的风格同一个结构：风格说明、改了什么、demo 片和它的源码，以后做片能接着用这些技法。之后像用库里的风格一样叫它的名字：“用我的**夜浮世绘**风格做一支 30 秒的片子，讲……”；挑风格时，你自己的风格排在最前面。库更新、重装 skill 都不会动它们；底子风格以后更新了，它会提一句，问你要不要把有用的修复同步过来。Claude 照着 [`MY-STYLES.md`](MY-STYLES.md) 一步步做。
+固化以后，风格存在 `~/lemo-my-styles/<名字>/`，和库里的风格同一个结构：风格说明、改了什么、demo 片和它的源码，以后做片能接着用这些技法。之后像用库里的风格一样叫它的名字：“用我的**夜浮世绘**风格做一支 30 秒的片子，讲……”；挑风格时，你自己的风格排在最前面。库更新、重装 skill 都不会动它们；底子风格以后更新了，它会提一句，问你要不要把有用的修复同步过来。agent 照着 [`MY-STYLES.md`](MY-STYLES.md) 一步步做。
 
 ## 风格
 
@@ -322,15 +368,15 @@ claude plugin uninstall lemo-opuscar@lemolab
 
 我是 **Lemomo**，更多信息见我的 [GitHub 主页](https://github.com/lemomo-ai)。
 
-**这不是一个 awesome 合集。** 这里的片子都是我自己用 Claude Opus 5.5 做的，只有两种风格来自外部贡献：孟菲斯微缩景观（[@EianLu](https://x.com/EianLu) 提供）和蜡笔立体世界（[@2nd1st](https://github.com/2nd1st) 提供）。风格是按 Opus 5.5 调出来的，Claude Fable、Opus、Sonnet 都能用；换成其他模型不保证能做出同样的效果。
+**这不是一个 awesome 合集。** 这里的样片都是我自己用 Claude Opus 5.5 做的，只有两种风格来自外部贡献：孟菲斯微缩景观（[@EianLu](https://x.com/EianLu) 提供）和蜡笔立体世界（[@2nd1st](https://github.com/2nd1st) 提供）。现在这套 skill 和流程已兼容多款 AI 编程 agent；各风格本身按 Opus 5.5 调校，Claude Fable、Opus、Sonnet 都能稳定驾驭，换成其他模型也能运行流程，但视觉效果可能有所不同。
 
 ## 授权
 
-**LemoLab × Claude Opus 5.5** 出品。
+**LemoLab × Claude Opus 5.5** 出品。**Lemo Opuscar for Agents**（`Maor-404/lemo-opuscar-for-agents` / npm `lemo-opuscar-for-agents`）是基于 **Lemo-Opuscar by Lemomo (LemoLab)**（[`github.com/lemomo-ai/lemo-opuscar`](https://github.com/lemomo-ai/lemo-opuscar)）的社区复刻版，新增多 AI Agent `.agents/skills/` 兼容、`.gemini/settings.json` 上下文配置、Windows `setup.py` 启动器、多生图提供方支持及 `bin/cli.mjs` npm CLI，完整保留原有各文件开源与知识共享协议及原作者署名。
 
 哪个文件适用哪种协议，以 [`LICENSE`](LICENSE) 为准；各协议全文在 [`LICENSES/`](LICENSES)，[`REUSE.toml`](REUSE.toml) 按文件逐一列出同样的规则。简单说：
 
-- **代码**：[MIT 协议](LICENSES/MIT.txt)。`core/`、`tools/`、`styleboard/` 里的代码，`plugin/` 里的脚本，各样片的代码，以及随这些代码一起的数据、配置和 `CREDITS`（像素小人录屏的代码画出的 Clawd 和 Claude 应用界面不在此授权内，见 [`LICENSE`](LICENSE)）。
+- **代码**：[MIT 协议](LICENSES/MIT.txt)。`core/`、`tools/`、`styleboard/` 里的代码，`.agents/skills/` 和 `plugin/` 里的脚本，各样片的代码，以及随这些代码一起的数据、配置和 `CREDITS`（像素小人录屏的代码画出的 Clawd 和 Claude 应用界面不在此授权内，见 [`LICENSE`](LICENSE)）。
 - **文档**：[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.zh-hans)。全部 Markdown 文件（各风格的 `STYLE.md`、`DEMO.md`，各份指南 `AGENTS.md`、`DIRECTOR.md`、`TECHNIQUE.md`、`MY-STYLES.md` 等）和生图提示词。可以非商用地转载和改编；须署名 **Lemo-Opuscar by Lemomo (LemoLab)**，附本仓库链接和协议链接，改动过的须注明。在这个协议之外，我们另外给你和与你一起做这支片子的人（员工、外包、客户）一项全球范围、免版税、非独占、不可撤销的许可：为了做自己的片子（商用片、给客户做的片子都算）阅读、照做、复制和改编这些文档，并把文档或改编后的版本放进你为这支片子交付的项目文件；把风格改成你自己的风格也算在内（[改成你自己的风格](#改成你自己的风格)）。这项额外许可不包括在上述人员和交付文件之外把文档或改编后的版本分享给别人，也不包括出售。除此之外的任何商用（比如出售这些文档，或把它们整体、部分或改编后放进以商业利益为目的的产品或服务，不论收不收费）都需要商用授权：请发邮件到 [lemomo.studio@gmail.com](mailto:lemomo.studio@gmail.com)。
 - **样片视频及其海报、静帧、字幕，以及由样片做成的图片**（`styles/`、`docs/`、画廊页和 Releases 中的）：[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.zh-hans)。可以转载、改编和商用，须署名 **Lemo-Opuscar by Lemomo (LemoLab)**，附本仓库链接和协议链接，改动过的须注明。其中的第三方影像、照片、卫星图、音乐和地图沿用各自的授权（见该片的 `CREDITS`）；OPUSCAR 98、感谢片和像素小人录屏（Mascot Screencast）里的 Clawd 是 Anthropic 的角色，不在此授权内；片中出现的第三方产品界面、名称和 logo（比如像素小人录屏里 Anthropic 的 Claude 应用界面）也不在此授权内（见 [`LICENSE`](LICENSE)）。
 - **两种外部贡献的风格**：条款相同；署名时连作者一起写：*Memphis Diorama by EianLu, in Lemo-Opuscar by Lemomo (LemoLab)*、*Crayon World 3D by 2nd1st, in Lemo-Opuscar by Lemomo (LemoLab)*。

@@ -1,10 +1,68 @@
 {
-  "name": "lemo-opuscar",
-  "version": "2.0.0",
-  "private": true,
+  "name": "lemo-opuscar-for-agents",
+  "version": "2.1.0",
   "type": "module",
-  "description": "Film styles for coding agents: each style ships a prompt and a demo film made entirely in code, on a shared toolkit.",
-  "engines": { "node": ">=20" },
+  "description": "Lemo Opuscar for Agents: code-rendered film styles and shared Agent Skill for Antigravity, Gemini CLI, Codex CLI, OpenCode, GitHub Copilot, and Claude Code (fork of Lemo-Opuscar by Lemomo / LemoLab).",
+  "bin": {
+    "lemo-opuscar-for-agents": "./bin/cli.mjs",
+    "lemo-opuscar": "./bin/cli.mjs"
+  },
+  "files": [
+    "bin/",
+    ".agents/skills/lemo-opuscar/",
+    ".claude-plugin/",
+    ".gemini/settings.json",
+    "plugin/",
+    "core/",
+    "styles/README.md",
+    "styles/*/STYLE.md",
+    "styles/*/style.json",
+    "styles/*/DEMO.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "DIRECTOR.md",
+    "TECHNIQUE.md",
+    "MY-STYLES.md",
+    "MAINTAINING.md",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE",
+    "LICENSES/",
+    "REUSE.toml",
+    "requirements.txt",
+    "requirements-voice.txt",
+    "requirements-music.txt",
+    "tools/assets.json",
+    "tools/fetch.sh",
+    "tools/*.py"
+  ],
+  "keywords": [
+    "agent-skills",
+    "ai-agents",
+    "antigravity",
+    "gemini-cli",
+    "codex",
+    "opencode",
+    "github-copilot",
+    "claude-code",
+    "video",
+    "animation",
+    "webgl",
+    "canvas",
+    "playwright",
+    "lemo-opuscar"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Maor-404/lemo-opuscar-for-agents.git"
+  },
+  "homepage": "https://github.com/Maor-404/lemo-opuscar-for-agents#readme",
+  "bugs": {
+    "url": "https://github.com/Maor-404/lemo-opuscar-for-agents/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "playwright-core": "^1.63.0",

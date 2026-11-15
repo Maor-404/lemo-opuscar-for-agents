@@ -21,7 +21,7 @@ body:
     attributes:
       label: How to reproduce · 复现步骤
       placeholder: |
-        1. sh plugin/skills/lemo-opuscar/scripts/setup.sh deps
+        1. sh .agents/skills/lemo-opuscar/scripts/setup.sh deps
         2. ...
     validations:
       required: true
@@ -37,7 +37,7 @@ body:
     id: env
     attributes:
       label: System and versions · 系统和版本
-      placeholder: macOS 15 / Windows 11 / Ubuntu 24.04; node 22; ffmpeg 7.1; Claude Code / Codex
+      placeholder: macOS 15 / Windows 11 / Ubuntu 24.04; node 22; ffmpeg 7.1; Antigravity / Gemini CLI / Codex / OpenCode / Copilot / Claude Code
     validations:
       required: true
   - type: input

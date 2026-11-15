@@ -60,7 +60,12 @@ SPDX-FileCopyrightText = "2026 Lemomo (LemoLab)"
 SPDX-License-Identifier = "CC-BY-NC-4.0"
 '''
 
-SETUP_OLD = 'plugin/skills/lemo-opuscar/scripts/setup.sh'
+SETUP_OLD = (
+    ('.agents/skills/lemo-opuscar/scripts/setup.sh', 'tools/setup.sh'),
+    ('plugin/skills/lemo-opuscar/scripts/setup.sh', 'tools/setup.sh'),
+    ('.agents/skills/lemo-opuscar/scripts/setup.py', 'tools/setup.py'),
+    ('plugin/skills/lemo-opuscar/scripts/setup.py', 'tools/setup.py'),
+)
 EDGE_CONSENT = ('it sends the narration text to Microsoft, so in this edition use it only when the user asks for it '
                 'and agrees to that')
 
@@ -154,16 +159,21 @@ def build(version):
         dst = os.path.join(OUT, LIB, f)
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         shutil.copy2(os.path.join(ROOT, f), dst)
-    # the library's own setup script replaces the clone-and-update one: every guide points to it
+    # the library's own setup scripts replace the clone-and-update ones: every guide points to them
+    setup_py = os.path.join(ROOT, '.agents', 'skills', 'lemo-opuscar', 'scripts', 'setup.py')
     shutil.copy2(os.path.join(ROOT, 'tools', 'directory', 'library-setup.sh'), os.path.join(OUT, LIB, 'tools', 'setup.sh'))
+    shutil.copy2(setup_py, os.path.join(OUT, LIB, 'tools', 'setup.py'))
     split_fetch()
     for dirpath, _, names in os.walk(os.path.join(OUT, LIB)):
         for n in names:
             p = os.path.join(dirpath, n)
             if not n.endswith(('.md', '.txt', '.py', '.sh', '.mjs', '.js')): continue
             s = open(p, encoding='utf-8').read()
-            if SETUP_OLD in s:
-                open(p, 'w', encoding='utf-8').write(s.replace(SETUP_OLD, 'tools/setup.sh'))
+            replaced = s
+            for old_setup, new_setup in SETUP_OLD:
+                replaced = replaced.replace(old_setup, new_setup)
+            if replaced != s:
+                open(p, 'w', encoding='utf-8').write(replaced)
     for rel, old, new in EDITS:
         p = os.path.join(OUT, LIB, rel)
         s = open(p, encoding='utf-8').read()
@@ -176,6 +186,7 @@ def build(version):
         write(rel, open(os.path.join(src, name), encoding='utf-8').read().replace('{STYLES}', str(styles)).replace('{VERSION}', version))
     os.makedirs(os.path.join(OUT, 'skills/lemo-opuscar/scripts'), exist_ok=True)
     shutil.copy2(os.path.join(src, 'setup.sh'), os.path.join(OUT, 'skills/lemo-opuscar/scripts/setup.sh'))
+    shutil.copy2(setup_py, os.path.join(OUT, 'skills/lemo-opuscar/scripts/setup.py'))
     shutil.copy2(os.path.join(src, 'SECURITY.md'), os.path.join(OUT, 'SECURITY.md'))
     lic = open(os.path.join(ROOT, 'LICENSE'), encoding='utf-8').read()
     if lic.count(LICENSE_EDIT[0]) != 1: die('LICENSE: its opening lines changed (update LICENSE_EDIT in tools/directory.py)')

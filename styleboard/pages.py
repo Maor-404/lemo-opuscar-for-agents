@@ -49,7 +49,7 @@ def use(data):
 
 # ---------------------------------------------------------------- words (English, 中文); the rest come from build.T and gallery.UI
 T = {
-    'title': ('{name} · a film style for Claude Code · Lemo-Opuscar', '{name} · Claude Code 影片风格 · Lemo-Opuscar'),
+    'title': ('{name} · a film style for coding agents · Lemo-Opuscar', '{name} · 编程 agent 影片风格 · Lemo-Opuscar'),
     'desc': ('{about} Demo film: {film} ({dur}), made entirely in code by Claude Opus 5.5.', '{about} Demo 片《{film}》（{dur}），由 Claude Opus 5.5 完全用代码做成。'),
     'skip': ('Skip to content', '跳到正文'),
     'to_bench': ('Station {nn} / {c} · {cat}: back to the bench', '工位 {nn} / {c} · {cat}：回到工作台'),
@@ -69,8 +69,8 @@ T = {
     'doc_n': ('{n} sections · in English', '{n} 节 · 英文'),
     'doc_go': ('Section {n} of STYLE.md on GitHub: {h}', 'GitHub 上 STYLE.md 第 {n} 节：{h}'),
     'spec_h': ('Facts', '资料'),
-    'f_needs': ('Needs', '需要'), 'f_needs_img': ('An image generator you provide (the Codex CLI or another image tool): the characters are generated, and without one this style can\'t start',
-                                                  '你自己提供的生图工具（Codex CLI 或别的生图工具）：人物要用它生成，没有就没法开始'),
+    'f_needs': ('Needs', '需要'), 'f_needs_img': ('An image generator you provide (signed-in Codex CLI, OPENAI_API_KEY, GEMINI_API_KEY / GOOGLE_API_KEY, or another image tool): the characters are generated, and without one this style can\'t start',
+                                                  '你自己提供的生图工具（已登录的 Codex CLI、OPENAI_API_KEY、GEMINI_API_KEY / GOOGLE_API_KEY，或别的生图工具）：人物要用它生成，没有就没法开始'),
     'f_no': ('Number', '编号'), 'f_fps': ('{fps} fps', '{fps} 帧/秒'), 'f_lic': ('Licence', '授权'), 'f_lic_v': ('STYLE.md, DEMO.md: CC BY-NC 4.0 · demo code: MIT{code} · film and stills: CC BY 4.0{nar}', 'STYLE.md、DEMO.md：CC BY-NC 4.0 · 样片代码：MIT{code} · 影片和静帧：CC BY 4.0{nar}'),   # links to LICENSE
     'f_lic_nar': (' (narration excluded)', '（旁白除外）'),   # the six films whose voice LICENSE excludes (NO_VOICE_LICENCE)
     'f_lic_clawd': (' (Clawd and the Claude app interface excluded)', '（Clawd 和 Claude 应用界面除外）'),   # CLAWD
@@ -292,9 +292,11 @@ class Doc(B.Page):
     def repo_ld(self):
         n = len(DATA['styles'])
         return {'@type': 'SoftwareSourceCode', '@id': G.REPO_URL, 'name': 'Lemo-Opuscar', 'url': G.REPO_URL, 'codeRepository': G.REPO_URL,
-                'description': f'{n} film styles, each a style prompt plus a demo film made entirely in code, packaged as a Claude Code skill.',
+                'description': (f'{n} film styles, each a style prompt plus a demo film made entirely in code, packaged as an Agent Skill '
+                                'for Google Antigravity, Gemini CLI, OpenAI Codex CLI, OpenCode, GitHub Copilot, and Claude Code.'),
                 'license': f'{BLOB}/LICENSE', 'author': {'@id': G.AUTHOR['@id']},   # LICENSE: code MIT, docs CC BY-NC 4.0, films CC BY 4.0
-                'keywords': ['Claude Code skill', 'Claude Opus 5.5', 'film styles', 'no video model', 'motion graphics', 'creative coding']}
+                'keywords': ['Agent Skill', 'Google Antigravity', 'Gemini CLI', 'OpenAI Codex CLI', 'OpenCode', 'GitHub Copilot',
+                             'Claude Code', 'Claude Code plugin', 'Claude Opus 5.5', 'film styles', 'no video model', 'motion graphics', 'creative coding']}
 
     def credits(self):
         """the home page's last line (who made it, where it lives) at the end of a page that doesn't run on into the bench"""
@@ -392,10 +394,10 @@ class StylePage(Doc):
                 f'  <p class="do"><button class="copy big" type="button" data-say>{ICON["copy"]}<span>{E(self.w("copy_say"))}</span></button><span class="ok" role="status" aria-live="polite"></span></p>\n </div>\n'
                 f' <p class="hint">{E(self.w("say_hint"))}</p>\n'
                 f' <div class="install" id="install">\n  <p class="ih">{E(self.w("make_first"))}</p>\n'
-                f'  <div class="tabs" role="tablist" aria-label="{E(self.w("tabs"))}"><button type="button" role="tab" id="tab-plugin" aria-controls="tp-plugin" aria-selected="true">{E(self.w("tab_plugin"))}</button>'
-                f'<button type="button" role="tab" id="tab-clone" aria-controls="tp-clone" aria-selected="false" tabindex="-1">{E(self.w("tab_clone"))}</button></div>\n'
-                f'  <div class="tp" id="tp-plugin" role="tabpanel" aria-labelledby="tab-plugin">{cmd(G.INSTALL_PLUGIN)}<p>{E(self.w("plugin_p"))}</p></div>\n'
-                f'  <div class="tp" id="tp-clone" role="tabpanel" aria-labelledby="tab-clone" hidden>{cmd(G.INSTALL_CLONE)}<p>{E(self.w("clone_p"))}</p></div>\n'
+                f'  <div class="tabs" role="tablist" aria-label="{E(self.w("tabs"))}"><button type="button" role="tab" id="tab-clone" aria-controls="tp-clone" aria-selected="true">{E(self.w("tab_clone"))}</button>'
+                f'<button type="button" role="tab" id="tab-plugin" aria-controls="tp-plugin" aria-selected="false" tabindex="-1">{E(self.w("tab_plugin"))}</button></div>\n'
+                f'  <div class="tp" id="tp-clone" role="tabpanel" aria-labelledby="tab-clone">{cmd(G.INSTALL_CLONE)}<p>{E(self.w("clone_p"))}</p></div>\n'
+                f'  <div class="tp" id="tp-plugin" role="tabpanel" aria-labelledby="tab-plugin" hidden>{cmd(G.INSTALL_PLUGIN)}<p>{E(self.w("plugin_p"))}</p></div>\n'
                 f' </div>\n</section>\n')
 
         # STYLE.md, as a contents page
@@ -694,12 +696,14 @@ def sitemap():
 def llms():
     n = len(DATA['styles'])
     out = ['# Lemo-Opuscar', '',
-           f'> {n} film styles for Claude Code. Each style is a reusable style prompt (STYLE.md) plus a short demo film made entirely in code '
-           'by Claude Opus 5.5, with no video model. Install it as a Claude Code skill, pick a style, bring your own topic, and your agent directs the film.', '',
+           f'> {n} film styles for coding agents (Google Antigravity, Gemini CLI, OpenAI Codex CLI, OpenCode, GitHub Copilot, and Claude Code). '
+           'Each style is a reusable style prompt (STYLE.md) plus a short demo film made entirely in code by Claude Opus 5.5, with no video model. '
+           'Use `.agents/skills/lemo-opuscar/` + `AGENTS.md` (or the Claude Code `plugin/`), pick a style, bring your own topic, and your agent directs the film.', '',
            f'Official repository: {G.REPO_URL} (by Lemomo, https://x.com/lemomo_ai). Forks are copies; this is the upstream.', '',
            '## Start here', '',
-           f'- [README]({BLOB}/README.md): what it is, how to install the skill, the style grid',
+           f'- [README]({BLOB}/README.md): what it is, supported coding agents and install options, the style grid',
            f'- [README in Chinese]({BLOB}/README.zh-CN.md): the same in Simplified Chinese',
+           f'- [Agent skill]({BLOB}/.agents/skills/lemo-opuscar/SKILL.md): canonical entry skill mirrored into the Claude Code plugin (`plugin/skills/lemo-opuscar/`)',
            f'- [Agent instructions]({BLOB}/AGENTS.md): how an agent directs a film in one of the styles',
            f'- [The Workbench]({B.LIVE}): every style on a long workbench, one station per category, with its demo film; in Chinese at {B.LIVE}zh/',
            f'- [OPUSCAR 98]({B.LIVE}opuscar98/): 98 Years of Best Picture ({G.FEATURE["dur"]}), the feature film made with these tools',

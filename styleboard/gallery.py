@@ -43,7 +43,7 @@ AUTHOR = {'@type': 'Person', '@id': 'https://github.com/lemomo-ai', 'name': 'Lem
           'sameAs': ['https://x.com/lemomo_ai', 'https://github.com/lemomo-ai']}
 # the install commands, as README.md gives them
 INSTALL_PLUGIN = ['claude plugin marketplace add lemomo-ai/lemo-opuscar', 'claude plugin install lemo-opuscar@lemolab']
-INSTALL_CLONE = ['git clone https://github.com/lemomo-ai/lemo-opuscar.git', 'cd lemo-opuscar', 'claude']
+INSTALL_CLONE = ['git clone https://github.com/lemomo-ai/lemo-opuscar.git', 'cd lemo-opuscar']
 # The feature film: its sources are not in the library; the 720p cut is on the "web" release (the pages play it from
 # site_config.film_url, inside the site), 1080p on "films".
 FEATURE = dict(poster='img/feature_opuscar98.jpg', dur='6:31', full=f'{FILMS_URL}/opuscar98.mp4', date='2026-09-29')
@@ -73,8 +73,8 @@ UI = {
     'skip': ('Skip to content', '跳到正文'),
     'lang_other': ('中文', 'English'), 'lang_other_label': ('切换到中文', 'Switch to English'),
     'hero_h1': ('Pick a style.<br>Bring your story.<br><em>Your agent makes the film.</em>', '挑一个风格，<br>讲你的故事，<br><em>片子让 agent 拍。</em>'),
-    'hero_lead': ('A library of {n} film styles for Claude Code and other coding agents. Every style comes with a short film made entirely in code by Claude Opus 5.5, with no video model.',
-                  '{n} 种影片风格，给 Claude Code 等编程 agent 用。每种都配一支 Claude Opus 5.5 完全用代码做出来的短片，没用任何视频模型。'),
+    'hero_lead': ('A library of {n} film styles for coding agents (Google Antigravity, Gemini CLI, OpenAI Codex CLI, OpenCode, GitHub Copilot, and Claude Code). Every style comes with a short film made entirely in code by Claude Opus 5.5, with no video model.',
+                  '{n} 种影片风格，支持 Google Antigravity、Gemini CLI、OpenAI Codex CLI、OpenCode、GitHub Copilot 与 Claude Code 等编程 agent。每种都配一支 Claude Opus 5.5 完全用代码做出来的短片，没用任何视频模型。'),
     'browse': ('Browse the {n} styles', '看全部 {n} 种风格'), 'how_btn': ('How it works', '怎么用'), 'envelope_btn': ('Open an envelope', '拆个信封'),
     'say_tpl': ('Make a film in the {style} style about {topic}.', '用{style}风格给我做一支关于{topic}的片子。'),
     'say_topic_ph': ('the coffee farm my family runs', '我家的咖啡园'),
@@ -82,9 +82,11 @@ UI = {
     'say_hint': ('You can name the style in English or Chinese, and add a length, a narrator or your own photos and music.',
                  '风格名用中文或英文都行；还可以加上时长、旁白的声音，或者你自己的照片和音乐。'),
     'copy': ('Copy', '复制'), 'copied': ('Copied', '已复制'),
-    'tab_plugin': ('Claude Code plugin', 'Claude Code 插件'), 'tab_clone': ('Clone the repo', 'clone 仓库'),
-    'plugin_p': ('Then use it from any folder. Each film is made in the folder you start from.', '之后在任何目录都能用，每支片子做在你发起时所在的文件夹里。'),
-    'clone_p': ('Films go into films/<name>/ inside the repo.', '片子做到仓库里的 films/<名字>/。'),
+    'tab_plugin': ('Claude Code plugin', 'Claude Code 插件'), 'tab_clone': ('Clone (all agents)', 'clone 仓库（全 agent）'),
+    'plugin_p': ('Installs the Claude Code plugin for any folder; each film is made in the folder you start from. For other agents globally, see Supported AI Coding Agents in the README.',
+                 '安装 Claude Code 插件后可在任意目录使用，每支片子做在你发起时所在的文件夹里；其他 agent 的全局安装见 README 的「支持的 AI 编程 Agent」。'),
+    'clone_p': ('Open the cloned folder in Antigravity, Gemini CLI, Codex CLI, OpenCode, or GitHub Copilot (.agents/skills/ and AGENTS.md load automatically), or run claude --plugin-dir ./plugin for Claude Code. Films go into films/<name>/ inside the repo.',
+                '用 Antigravity、Gemini CLI、Codex CLI、OpenCode 或 GitHub Copilot 打开仓库即可（会自动读取 .agents/skills/ 与 AGENTS.md），Claude Code 可运行 claude --plugin-dir ./plugin。片子做到仓库里的 films/<名字>/。'),
     'n_styles': ('{n} styles', '{n} 种'),
     'search': ('Search styles, films, uses', '搜风格、片名、用途'), 'search_label': ('Search', '搜索'),
     'new': ('New', '新'),
@@ -102,7 +104,7 @@ UI = {
     'still_alt': ('{name}: a still at {t}', '{name}：{t} 的静帧'),
     'make_h': ('Make a film in this style', '用这个风格做你的片'),
     'make_p': ('Type your topic, copy the sentence and say it to your agent.', '写上你的题目，复制这句话，告诉你的 agent。'),
-    'make_first': ('First time? Install the skill once:', '第一次用？先装一次 skill：'),
+    'make_first': ('First time? Clone the repo or install the skill once:', '第一次用？先 clone 仓库或装一次 skill：'),
     'f_cat': ('Category', '类别'), 'f_good': ('Good for', '适合做'), 'f_film': ('Demo film', 'Demo 片'),
     'f_aka': ('Formerly', '曾用名'), 'f_folder': ('Folder', '文件夹'), 'f_by': ('Contributed by', '贡献者'),
     'l_style': ('STYLE.md: the style guide', 'STYLE.md：风格说明（英文）'), 'l_demo': ('DEMO.md: how the demo was made', 'DEMO.md：这支 demo 怎么做的（英文）'),
@@ -133,8 +135,8 @@ UI = {
     'o_made_h': ('How it was made', '怎么做的'),
     'o_made_1': ('No video model drew this film. Claude Opus 5.5, working in Claude Code, wrote each set, the character animation, the camera moves, the edit and the score as code, and the code rendered them to video.',
                  '这部片没有用视频模型生成。Claude Opus 5.5 在 Claude Code 里把每个布景、角色动画、运镜、剪辑和配乐都写成代码，再由代码渲染成视频。'),
-    'o_made_2': ('The same approach is packaged as Lemo-Opuscar: {n} film styles, each a style prompt plus a demo film, installable as a Claude Code skill so your agent can direct a film about your own topic.',
-                 '同样的做法整理成了 Lemo-Opuscar：{n} 种影片风格，每种是一份风格提示词加一支样片，可以装成 Claude Code skill，让你的 agent 给你自己的题材导一支片。'),
+    'o_made_2': ('The same approach is packaged as Lemo-Opuscar: {n} film styles, each a style prompt plus a demo film, shipped as an Agent Skill (Antigravity, Gemini CLI, Codex CLI, OpenCode, GitHub Copilot, and Claude Code, plus a Claude Code plugin) so your agent can direct a film about your own topic.',
+                 '同样的做法整理成了 Lemo-Opuscar：{n} 种影片风格，每种是一份风格提示词加一支样片，以 Agent Skill 形式提供（支持 Antigravity、Gemini CLI、Codex CLI、OpenCode、GitHub Copilot 与 Claude Code，并附 Claude Code 插件），让你的 agent 给你自己的题材导一支片。'),
     'o_kind_2D': ('Drawn flat, in layers', '平面绘制，分层'), 'o_kind_2.5D': ('3D models rendered into flat 2D layers', '3D 模型渲染进 2D 平面图层'),
     'o_kind_3D': ('A real 3D scene and camera', '真 3D 场景和机位'),
     # thank-you films

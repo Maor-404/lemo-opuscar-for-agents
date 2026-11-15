@@ -60,6 +60,7 @@ The build needs fontTools and brotli for the font subsets (in the Python that ru
 
 - **Human:** approve the style frame before production, and the finished film.
 - **Machine:** `asr_check.py` passes on every line; `mux.sh` reports about −14 LUFS and no warning; `readcheck.mjs` passes; `python3 tools/release.py check --strict <slug>` is clean (it needs the Register steps above). It also stops images under `styles/` that no committed file names (by name or pattern), demo files that nothing reached from the style's entries (STYLE.md, DEMO.md, build.sh, index.html…) loads, and process wording (`PRODUCTION_LOG`, review notes; the list is `PROCESS_WORDS` in the script) in any committed text.
+- **Skills:** `python3 tools/sync_skills.py --check` and `python3 tools/validate_skills.py` pass (add `--with-cli` when `claude` is installed).
 - **Maps:** library demos follow DIRECTOR.md §13 like any film: every map shot checked enlarged, the map data and its view named in `CREDITS`.
 - **Real events and products:** every fact on screen and in the voice-over comes from an official source, kept in `demo/FACTS.md` (claim, URL, quoted wording); check the final script against it before the last render.
 
@@ -79,6 +80,13 @@ Don't push before the upload has finished, and don't commit `tools/assets.json` 
 
 Back up first (old versions move out of the repository, not into git). Re-render, replace `<slug>.mp4`, and run `sh tools/publish.sh`: it re-uploads the film and refreshes its web cut.
 
+## Agent skills
+
+`.agents/skills/lemo-opuscar/` is the canonical Agent Skill loaded across coding agents (Google Antigravity, Gemini CLI, OpenAI Codex CLI, OpenCode, GitHub Copilot, and Claude Code). `plugin/skills/lemo-opuscar/` is a non-symlink mirror copy maintained alongside `plugin/` for Claude Code plugin packaging.
+
+- Whenever you edit `.agents/skills/lemo-opuscar/`, run `python3 tools/sync_skills.py` to copy changes into `plugin/skills/lemo-opuscar/`, normalize `.sh` line endings to LF, and mark shell scripts executable. Do not edit `plugin/skills/lemo-opuscar/` directly without syncing from `.agents/skills/lemo-opuscar/`.
+- Run `python3 tools/validate_skills.py` (or `python3 tools/validate_skills.py --with-cli` to also run `claude plugin validate` and a dry build of `tools/directory.py`) before committing skill, plugin, or README compatibility changes.
+
 ## Directory edition
 
 The Claude plugin directory lists a self-contained build of the plugin, on the orphan branch `directory` (the submission tracks that branch; `main` stays what visitors see). It carries the guides, every `STYLE.md` / `style.json` / `DEMO.md`, `core/` (without the Poly Haven models, which only demo code uses) and its own `README.md`, `SECURITY.md` and `SKILL.md`: nothing is cloned or fetched to tell the agent what to do, there are no demo sources, and Chinese edge-tts narration is used only with the user's consent. The sources of the plugin-only files are in `tools/directory/`; the build and its checks (file sizes, personal info) are in `tools/directory.py`.
@@ -87,4 +95,4 @@ After a release on `main` (new styles, changed guides or tools):
 
 1. `git worktree add ../lemo-opuscar-directory directory` (once; reuse it afterwards).
 2. `python3 tools/directory.py <version> --into ../lemo-opuscar-directory`, with a version above the branch's current `.claude-plugin/plugin.json` (new styles or features: 1.1.0; fixes only: 1.0.1). The directory treats each version number as a release, so the script refuses the same or a lower one; `--same-version` is only for fixing a version that was never published. It also stops when a guide changed so much that one of its edits no longer applies: update `EDITS` in the script.
-3. `claude plugin validate ../lemo-opuscar-directory`, then commit there (`Lemo-Opuscar <version>, plugin directory edition`) and push `directory`. The directory scans each push and publishes the new version.
+3. `python3 tools/validate_skills.py` and `claude plugin validate ../lemo-opuscar-directory`, then commit there (`Lemo-Opuscar <version>, plugin directory edition`) and push `directory`. The directory scans each push and publishes the new version.
