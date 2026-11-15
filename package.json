@@ -4,8 +4,8 @@
   "type": "module",
   "description": "Lemo Opuscar for Agents: code-rendered film styles and shared Agent Skill for Antigravity, Gemini CLI, Codex CLI, OpenCode, GitHub Copilot, and Claude Code (fork of Lemo-Opuscar by Lemomo / LemoLab).",
   "bin": {
-    "lemo-opuscar-for-agents": "./bin/cli.mjs",
-    "lemo-opuscar": "./bin/cli.mjs"
+    "lemo-opuscar-for-agents": "bin/cli.mjs",
+    "lemo-opuscar": "bin/cli.mjs"
   },
   "files": [
     "bin/",
